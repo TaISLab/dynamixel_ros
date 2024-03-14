@@ -1,0 +1,8 @@
+prefix=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/devel
+
+Name: dynamixel_ros_library
+Description: Description of dynamixel_ros_library
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

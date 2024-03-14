@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/devel/setup.sh
