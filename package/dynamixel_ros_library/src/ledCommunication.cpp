@@ -86,8 +86,6 @@ int main()
     myPortHandler = dynamixel::PortHandler::getPortHandler(PORT_NAME);
     myPacketHandler = dynamixel::PacketHandler::getPacketHandler(PROTOCOL_VERSION);
 
-
-
     if(!openUSB())
     {
         std::cout<<"ERROR OPENING THE PORT"<<std::endl;
@@ -103,6 +101,4 @@ int main()
     {
         std::cout<<"FAIL SWITCHING THE LED STATE"<<std::endl;
     }
-
-
 }

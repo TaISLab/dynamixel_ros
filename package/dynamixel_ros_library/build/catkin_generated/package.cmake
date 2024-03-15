@@ -1,6 +1,6 @@
 set(_CATKIN_CURRENT_PACKAGE "dynamixel_ros_library")
-set(dynamixel_ros_library_VERSION "0.0.0")
-set(dynamixel_ros_library_MAINTAINER "maxxx <maxxx@todo.todo>")
+set(dynamixel_ros_library_VERSION "1.0.0")
+set(dynamixel_ros_library_MAINTAINER "maxxx <maksymsaldat2001@gmail.com>")
 set(dynamixel_ros_library_PACKAGE_FORMAT "2")
 set(dynamixel_ros_library_BUILD_DEPENDS "dynamixel_sdk" "dynamixel_workbench_controllers" "dynamixel_workbench_msgs" "dynamixel_workbench_operators" "dynamixel_workbench_toolbox" "message_generation" "roscpp" "std_msgs")
 set(dynamixel_ros_library_BUILD_EXPORT_DEPENDS "dynamixel_sdk" "dynamixel_workbench_controllers" "dynamixel_workbench_msgs" "dynamixel_workbench_operators" "dynamixel_workbench_toolbox" "roscpp" "std_msgs")
