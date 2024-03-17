@@ -4,6 +4,32 @@
 dynamixel::PortHandler *myPortHandler;
 dynamixel::PacketHandler *myPacketHandler;
 
+std::map<std::string, int> dynamixelMotor::ADDR_XW_SERIES = {
+    // EEPROM AREA
+    {"MODEL_NUMBER", 0},
+    {"MODEL_INFORMATION", 2},
+    {"FIRMWARE_VERSION", 6},
+    {"ID", 7},
+    {"BAUDRATE", 8},
+    {"RETURN_DELAY_TIME", 9},
+    {"DRIVE_MODE", 10},
+    {"OPERATING_MODE", 11},
+    {"SECONDARY_ID", 12},
+    {"PROTOCOL_TYPE", 13},
+    {"HOMING_OFFSET", 20},
+    {"MOVING_THRESHOLD", 24},
+    {"TEMPERATURE_LIMIT", 31},
+    {"MAX_VOLTAGE_LIMIT", 32},
+    {"MIN_VOLTAGE_LIMIT", 34},
+    {"PWM_LIMIT", 36},
+    {"CURRENT_LIMIT", 38},
+    {"VELOCITY_LIMIT", 44},
+    {"MAX_POSITION_LIMIT", 48},
+    {"MIN_POSITION_LIMIT", 52},
+    {"STARTUP_CONFIGURATION", 60},
+    {"SHUTDOWN", 63}
+};
+
 
 dynamixelMotor::dynamixelMotor(std::string IDENTIFICATOR, int ID)
 {
@@ -38,7 +64,6 @@ bool dynamixelMotor::iniComm(char* PORT_NAME, float PROTOCOL_VERSION, int BAUDRA
 
 void dynamixelMotor::setControlTable()
 {
-    // Definition of necessary variables
     uint16_t *model_number = new uint16_t[1];
     uint8_t dxl_error;
 
@@ -188,7 +213,8 @@ void dynamixelMotor::setControlTable()
         break;
 
     }
-    
+
+    CURRENT_TABLE = dynamixelMotor::ADDR_XW_SERIES;
     ROS_INFO("Control table set for: %s",this->MODEL.c_str());
 }
 
@@ -213,7 +239,7 @@ int dynamixelMotor::getBaudrate()
     uint8_t *data = new uint8_t[1];
     int baudrate;
 
-    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, 8, data, &dxl_error);
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CURRENT_TABLE["BAUDRATE"], data, &dxl_error);
         
     if(dxl_comm_result != COMM_SUCCESS)
     {

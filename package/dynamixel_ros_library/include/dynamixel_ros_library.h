@@ -15,7 +15,7 @@ class dynamixelMotor
         // Communication start
         static bool iniComm(char* PORT_NAME, float PROTOCOL_VERSION, int BAUDRATE);
 
-        // Setting the control table
+        // Tables initialization and setting
         void setControlTable();
 
         // Getters and setters
@@ -27,34 +27,8 @@ class dynamixelMotor
         int getBaudrate();
 
     private:
-        // enum ADDR_X_SERIES
-        // {
-        //     // EEPROM
-        //     MODEL_NUMBER = 0,
-        //     MODEL_INFORMATION = 2,
-        //     FIRMWARE_VERSION = 6,
-        //     ID = 7,
-        //     BAUDRATE = 8,
-        //     RETURN_DELAY_TIME = 9,
-        //     DRIVE_MODE = 10,
-        //     OPERATING_MODE = 11,
-        //     SECONDARY_ID = 12,
-        //     PROTOCOL_TYPE = 13,
-        //     HOMING_OFFSET = 20,
-        //     MOVING_THRESHOLD = 24,
-        //     TEMPERATURE_LIMIT = 31,
-        //     MAX_VOLTAGE_LIMIT = 32,
-        //     MIN_VOLTAGE_LIMIT = 34,
-        //     PWM_LIMIT = 36,
-        //     CURRENT_LIMIT = 38,
-        //     VELOCITY_LIMIT = 44,
-        //     MAX_POSITION_LIMIT = 48,
-        //     MIN_POSITION_LIMIT = 52,
-        //     STARTUP_CONFIGURATION = 60,
-        //     SHUTDOWN = 63
-
-        //     // RAM
-        // };
+        static std::map<std::string, int> ADDR_XW_SERIES, ADDR_XD540_SERIES, ADDR_XD430_SERIES;
+        std::map<std::string, int> CURRENT_TABLE;
 
         // Dynamixels parameters
         int ID;
