@@ -20,19 +20,20 @@ class dynamixelMotor
 
         // Getters and setters
         int getID();
-        void setID();
+        void setID(int NEW_ID);
 
         std::string getModel();
 
         int getBaudrate();
-
+        
     private:
-        static std::map<std::string, int> ADDR_XW_SERIES, ADDR_XD540_SERIES, ADDR_XD430_SERIES;
-        std::map<std::string, int> CURRENT_TABLE;
+        static std::map<std::string, int> ADDR_DMXL22, ADDR_DMXL25;
+        static std::map<int, std::string> DMXL_MODELS;
+        std::map<std::string, int> CONTROL_TABLE;
 
         // Dynamixels parameters
         int ID;
-        std::string MODEL;
+        int MODEL;
         std::string IDENTIFICATOR;
 };
 
