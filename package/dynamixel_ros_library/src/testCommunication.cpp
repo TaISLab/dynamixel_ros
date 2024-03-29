@@ -24,6 +24,8 @@ int main(int argc, char *argv[])
     J1.setControlTable();
 
     J1.getBaudrate();
+    J1.setReturnDelayTime(500);
+    int time = J1.getReturnDelayTime();
     
     return 1;
 }

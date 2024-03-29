@@ -4,10 +4,28 @@
 // DEPENDENCIES
 #include <dynamixel_sdk.h>
 
+// OPERATING MODES (idk if necessary)
+enum class operatingMode{
+    CURRENT_CONTROL = 0,
+    VELOCITY_CONTROL = 1,
+    POSITION_CONTROL = 3,
+    EXTENDED_POSITION_CONTROL = 4,
+    CURRENT_BASED_POSITION_CONTROL = 5,
+    PWM_CONTROL = 16
+};
+
 // CLASS DEFINITION
 class dynamixelMotor
 {
     public:
+        // CONSTS
+        static const int CURRENT_CONTROL_MODE = 0, 
+                         VELOCITY_CONTROL_MODE = 1, 
+                         POSITION_CONTROL_MODE = 3, 
+                         EXTENDED_POSITION_CONTROL_MODE = 4, 
+                         CURRENT_BASED_POSITION_CONTROL = 5, 
+                         PWM_CONTROL_MODE = 16;
+
         // CONSTRUCTOR AND DESTRUCTOR
         dynamixelMotor(std::string IDENTIFICATOR, int ID);
         ~dynamixelMotor();
@@ -25,16 +43,29 @@ class dynamixelMotor
         std::string getModel();
 
         int getBaudrate();
+        void setBaudrate();
+
+        int getReturnDelayTime();
+        void setReturnDelayTime(int RETURN_DELAY_TIME);
+
+        std::string getOperatingMode();
+        void setOperatingMode(int MODE);
+
+        // Config methods
+        void configDriveMode(bool REVERSE_MODE, bool SLAVE_MODE, bool TIME_BASED_PROFILE, bool TORQUE_AUTO_ON);
         
     private:
+        // MAPS USED TO CHANGE BETWEEN DIFF EEPROM CONTROL TABLES
         static std::map<std::string, int> ADDR_DMXL22, ADDR_DMXL25;
+
+        // MAPS THAT CONECTS A MODELS WITH ITS MODEL NUMBERS
         static std::map<int, std::string> DMXL_MODELS;
-        std::map<std::string, int> CONTROL_TABLE;
 
         // Dynamixels parameters
         int ID;
         int MODEL;
         std::string IDENTIFICATOR;
+        std::map<std::string, int> CONTROL_TABLE;
 };
 
 #endif

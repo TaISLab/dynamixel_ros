@@ -115,7 +115,7 @@ dynamixelMotor::dynamixelMotor(std::string IDENTIFICATOR, int ID)
 
 dynamixelMotor::~dynamixelMotor()
 {
-    
+
 }
 
 bool dynamixelMotor::iniComm(char* PORT_NAME, float PROTOCOL_VERSION, int BAUDRATE)
@@ -148,8 +148,7 @@ void dynamixelMotor::setControlTable()
 
     if(dxl_comm_result != COMM_SUCCESS)
     {
-        ROS_ERROR("Error reading the model number of DMXL: %d",this->ID);
-        ROS_ERROR("Error code: %d", dxl_error);
+        ROS_ERROR("DMXL %d: Failed to read the model number. Error code: %d",this->ID,dxl_error);
     } else {
         this->MODEL = static_cast<int>(*model_number); 
 
@@ -198,7 +197,7 @@ void dynamixelMotor::setControlTable()
             break;
         }
 
-        ROS_INFO("Control table set for: %s", dynamixelMotor::DMXL_MODELS[this->MODEL].c_str());
+        ROS_INFO("DMXL %d: Control table set for: %s",this->ID, dynamixelMotor::DMXL_MODELS[this->MODEL].c_str());
     }
 }
 
@@ -209,19 +208,26 @@ int dynamixelMotor::getID()
 
 void dynamixelMotor::setID(int NEW_ID)
 {
+    // If ID is changed, please, pay attention to yours declarations. Now, you need to change the 'ID' parameter you use in dynamixelMotor constructor.
     int dxl_comm_result = 0;
     uint8_t dxl_error = 0;
-    uint8_t *dato = new uint8_t[1];
 
-    dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["ID"], NEW_ID, &dxl_error);
-
-    if (dxl_comm_result != COMM_SUCCESS)    
+    if(NEW_ID > 0 && NEW_ID < 254)
     {
-        ROS_ERROR("Failed to change Dynamixels ID");
-        ROS_ERROR("Error code: %d", dxl_error);
+        dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["ID"], NEW_ID, &dxl_error);
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the ID. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("DMXL %d: Changed the ID. New ID: %d", this->ID, NEW_ID);
+            this->ID = NEW_ID;
+        }
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid DMXL ID(0 - 253)", this->ID);
     }
 
-    this->ID = NEW_ID;
 }
 
 std::string dynamixelMotor::getModel()
@@ -247,114 +253,203 @@ int dynamixelMotor::getBaudrate()
         
     if(dxl_comm_result != COMM_SUCCESS)
     {
-        ROS_ERROR("Failed to read from the LED for Dynamixel ID %d", this->ID);
-        ROS_ERROR("Error code: %d", dxl_error);
-        return 0;
+        ROS_ERROR("DMXL %d: Failed to read the baudrate. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else
+    {
+        if(max_baudrate_45M)
+        {
+            switch(static_cast<int>(*data))
+            {
+                case 0:
+                    baudrate = 9600;
+                break;
+
+                case 1:
+                    baudrate = 57600;
+                break;
+
+                case 2:
+                    baudrate = 115200;
+                break;
+
+                case 3:
+                    baudrate = 1e6;
+                break;
+
+                case 4:
+                    baudrate = 2e6;
+                break;
+
+                case 5:
+                    baudrate = 3e6;
+                break;
+
+                case 6:
+                    baudrate = 4e6;
+                break;
+
+                case 7:
+                    baudrate = 4.5e6;
+                break;
+
+                default:
+                    baudrate = 0;
+                break;
+            }
+        } else if(max_baudrate_4M)
+        {
+            switch (static_cast<int>(*data))
+            {
+                case 0:
+                    baudrate = 9600;
+                break;
+
+                case 1:
+                    baudrate = 57600;
+                break;
+
+                case 2:
+                    baudrate = 115200;
+                break;
+
+                case 3:
+                    baudrate = 1e6;
+                break;
+
+                case 4:
+                    baudrate = 2e6;
+                break;
+
+                case 5:
+                    baudrate = 3e6;
+                break;
+
+                case 6:
+                    baudrate = 4e6;
+                break;
+            
+                default:
+                    baudrate = 0;
+                break;
+            }
+        } else if(max_baudrate_1M)
+        {
+            switch (static_cast<int>(*data))
+            {
+                case 0:
+                    baudrate = 9600;
+                break;
+            
+                case 1:
+                    baudrate = 57600;
+                break;
+
+                case 2:
+                    baudrate = 115200;
+                break;
+
+                case 3:
+                    baudrate = 1e6;
+                break;
+
+                default:
+                    baudrate = 0;
+                break;
+            }
+        }
+        
+        ROS_INFO("DMXL %d: Current baudrate is %d bps",this->ID,baudrate);
+        return baudrate;
+    }
+}
+
+int dynamixelMotor::getReturnDelayTime() //RETURNS MICRO SECONDS
+{
+    uint8_t dxl_error = 0;
+    uint8_t *data = new uint8_t[1];
+    int time;
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["RETURN_DELAY_TIME"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the return delay time. Error code: %d", this->ID,dxl_error);
+        return -1;
+    } else 
+    {
+        time = static_cast<int>(*data)*2;
+        ROS_INFO("DMXL %d: Current return delay time is %d micro seconds",this->ID,time);
+        return time;
+    }
+}
+
+void dynamixelMotor::setReturnDelayTime(int RETURN_DELAY_TIME)
+{
+    int dxl_comm_result = 0;
+    uint8_t dxl_error = 0;
+
+    if(RETURN_DELAY_TIME > 0 && RETURN_DELAY_TIME < 508)
+    {
+        dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["RETURN_DELAY_TIME"], RETURN_DELAY_TIME/2, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the return delay time. Error code: %d", this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("DMXL %d: Return delay time changed to %d micro seconds.",this->ID,RETURN_DELAY_TIME);
+        }
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid return delay time(0 - 508)",this->ID);
+    }
+}
+
+void dynamixelMotor::configDriveMode(bool REVERSE_MODE, bool SLAVE_MODE, bool TIME_BASED_PROFILE, bool TORQUE_AUTO_ON)
+{
+    // FOR MORE INFO ABOUT PARAMS, CHECK DYNAMIXEL SDK
+    int data = 0;
+    uint8_t dxl_error = 0;
+
+    // IFs necessary to calculate the final value to put in 'DRIVE_MODE' register of a DMXL
+    if(REVERSE_MODE)
+    {
+        data+=1;
     }
 
-    if(max_baudrate_45M)
+    if(SLAVE_MODE)
     {
-        switch(static_cast<int>(*data))
-        {
-            case 0:
-                baudrate = 9600;
-            break;
-
-            case 1:
-                baudrate = 57600;
-            break;
-
-            case 2:
-                baudrate = 115200;
-            break;
-
-            case 3:
-                baudrate = 1e6;
-            break;
-
-            case 4:
-                baudrate = 2e6;
-            break;
-
-            case 5:
-                baudrate = 3e6;
-            break;
-
-            case 6:
-                baudrate = 4e6;
-            break;
-
-            case 7:
-                baudrate = 4.5e6;
-            break;
-
-            default:
-                baudrate = 0;
-            break;
-        }
-    } else if(max_baudrate_4M)
-    {
-        switch (static_cast<int>(*data))
-        {
-            case 0:
-                baudrate = 9600;
-            break;
-
-            case 1:
-                baudrate = 57600;
-            break;
-
-            case 2:
-                baudrate = 115200;
-            break;
-
-            case 3:
-                baudrate = 1e6;
-            break;
-
-            case 4:
-                baudrate = 2e6;
-            break;
-
-            case 5:
-                baudrate = 3e6;
-            break;
-
-            case 6:
-                baudrate = 4e6;
-            break;
-        
-            default:
-                baudrate = 0;
-            break;
-        }
-    } else if(max_baudrate_1M)
-    {
-        switch (static_cast<int>(*data))
-        {
-            case 0:
-                baudrate = 9600;
-            break;
-        
-            case 1:
-                baudrate = 57600;
-            break;
-
-            case 2:
-                baudrate = 115200;
-            break;
-
-            case 3:
-                baudrate = 1e6;
-            break;
-
-            default:
-                baudrate = 0;
-            break;
-        }
+        data+=2;
     }
+
+    if(TIME_BASED_PROFILE)
+    {
+        data+=4;
+    }
+
+    if(TORQUE_AUTO_ON)
+    {
+        data+=8;
+    }
+
+    int dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["DRIVE_MODE"], data, &dxl_error);
+
+    if (dxl_comm_result != COMM_SUCCESS)    
+    {
+        ROS_ERROR("DMXL %d: Failed to change the drive mode configuration. Error code: %d", this->ID, dxl_error);
+    } else 
+    {
+        ROS_INFO("DMXL %d: Drive mode configuration changed. ",this->ID);
+    }
+}
+
+std::string dynamixelMotor::getOperatingMode()
+{
     
-    ROS_INFO("Getting baudrate for Dynamixel ID: %d",this->ID);
-    ROS_INFO("Current baudrate is: %d bps",baudrate);
-    return baudrate;
+}
+
+void dynamixelMotor::setOperatingMode(int MODE)
+{
+
 }
