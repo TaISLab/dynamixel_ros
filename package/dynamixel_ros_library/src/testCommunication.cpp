@@ -24,8 +24,12 @@ int main(int argc, char *argv[])
     J1.setControlTable();
 
     J1.getBaudrate();
-    J1.setReturnDelayTime(500);
+    J1.setReturnDelayTime(2);
     int time = J1.getReturnDelayTime();
+    J1.configDriveMode(false,false,false,false);
     
+    std::printf(J1.getOperatingMode().c_str());
+    std::printf("\n");
+
     return 1;
 }

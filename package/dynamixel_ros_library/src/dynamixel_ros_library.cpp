@@ -133,7 +133,7 @@ bool dynamixelMotor::iniComm(char* PORT_NAME, float PROTOCOL_VERSION, int BAUDRA
         return false;
     } else
     {
-        ROS_INFO("Initialization success");
+        ROS_INFO("\033[1;32mInitialization success\033[0m");
         return true;
     }
 }
@@ -197,8 +197,10 @@ void dynamixelMotor::setControlTable()
             break;
         }
 
-        ROS_INFO("DMXL %d: Control table set for: %s",this->ID, dynamixelMotor::DMXL_MODELS[this->MODEL].c_str());
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Control table set for: %s",this->ID, dynamixelMotor::DMXL_MODELS[this->MODEL].c_str());
     }
+
+    delete[] model_number;
 }
 
 int dynamixelMotor::getID()
@@ -220,7 +222,7 @@ void dynamixelMotor::setID(int NEW_ID)
             ROS_ERROR("DMXL %d: Failed to change the ID. Error code: %d",this->ID, dxl_error);
         } else 
         {
-            ROS_INFO("DMXL %d: Changed the ID. New ID: %d", this->ID, NEW_ID);
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Changed the ID. New ID: %d", this->ID, NEW_ID);
             this->ID = NEW_ID;
         }
     } else
@@ -359,7 +361,8 @@ int dynamixelMotor::getBaudrate()
             }
         }
         
-        ROS_INFO("DMXL %d: Current baudrate is %d bps",this->ID,baudrate);
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current baudrate is %d bps",this->ID,baudrate);
+        delete[] data;
         return baudrate;
     }
 }
@@ -379,9 +382,11 @@ int dynamixelMotor::getReturnDelayTime() //RETURNS MICRO SECONDS
     } else 
     {
         time = static_cast<int>(*data)*2;
-        ROS_INFO("DMXL %d: Current return delay time is %d micro seconds",this->ID,time);
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current return delay time is %d micro seconds",this->ID,time);
         return time;
     }
+
+    delete[] data;
 }
 
 void dynamixelMotor::setReturnDelayTime(int RETURN_DELAY_TIME)
@@ -398,7 +403,7 @@ void dynamixelMotor::setReturnDelayTime(int RETURN_DELAY_TIME)
             ROS_ERROR("DMXL %d: Failed to change the return delay time. Error code: %d", this->ID, dxl_error);
         } else 
         {
-            ROS_INFO("DMXL %d: Return delay time changed to %d micro seconds.",this->ID,RETURN_DELAY_TIME);
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Return delay time changed to %d micro seconds.",this->ID,RETURN_DELAY_TIME);
         }
     } else
     {
@@ -406,31 +411,65 @@ void dynamixelMotor::setReturnDelayTime(int RETURN_DELAY_TIME)
     }
 }
 
+void dynamixelMotor::showDriveModeConfig()
+{
+    uint8_t *config = new uint8_t[1];
+    uint8_t dxl_error;
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["DRIVE_MODE"], config, &dxl_error);
+
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the drive mode configuration. Error code: %d",this->ID,dxl_error);
+    } else 
+    {
+        bool reverse_mode = (*config & 0b00000001) != 0;
+        bool slave_mode = (*config & 0b00000010) != 0;
+        bool time_based_profile = (*config & 0b00000100) != 0;
+        bool auto_torque = (*config & 0b00001000) != 0;
+
+        std::string s_reverse_mode, s_slave_mode, s_time_based_profile, s_torque_auto_on;
+        s_reverse_mode = reverse_mode ? "ON" : "OFF";
+        s_slave_mode = slave_mode ? "ON" : "OFF";
+        s_time_based_profile = time_based_profile ? "ON" : "OFF";
+        s_torque_auto_on = auto_torque ? "ON" : "OFF";    
+
+        ROS_INFO("\n \033[0;35mCurrent config\033[0m \n REVERSE_MODE: %s \n SLAVE MODE: %s \n TIME BASED PROFILE: %s \n AUTO TORQUE: %s",
+        s_reverse_mode.c_str(), s_slave_mode.c_str(), s_time_based_profile.c_str(), s_torque_auto_on.c_str());
+    }
+
+    delete[] config;
+}
+
 void dynamixelMotor::configDriveMode(bool REVERSE_MODE, bool SLAVE_MODE, bool TIME_BASED_PROFILE, bool TORQUE_AUTO_ON)
 {
     // FOR MORE INFO ABOUT PARAMS, CHECK DYNAMIXEL SDK
-    int data = 0;
+    std::string s_reverse_mode, s_slave_mode, s_time_based_profile, s_torque_auto_on;
+    s_reverse_mode = REVERSE_MODE ? "ON" : "OFF";
+    s_slave_mode = SLAVE_MODE ? "ON" : "OFF";
+    s_time_based_profile = TIME_BASED_PROFILE ? "ON" : "OFF";
+    s_torque_auto_on = TORQUE_AUTO_ON ? "ON" : "OFF";
     uint8_t dxl_error = 0;
+    uint8_t data = 0;
 
-    // IFs necessary to calculate the final value to put in 'DRIVE_MODE' register of a DMXL
-    if(REVERSE_MODE)
+    if (REVERSE_MODE)
     {
-        data+=1;
+        data |= (1 << 0);  // Set bit 0
     }
 
-    if(SLAVE_MODE)
+    if (SLAVE_MODE)
     {
-        data+=2;
+        data |= (1 << 1);  // Set bit 1
     }
 
-    if(TIME_BASED_PROFILE)
+    if (TIME_BASED_PROFILE)
     {
-        data+=4;
+        data |= (1 << 2);  // Set bit 2
     }
 
-    if(TORQUE_AUTO_ON)
+    if (TORQUE_AUTO_ON)
     {
-        data+=8;
+        data |= (1 << 3);  // Set bit 3
     }
 
     int dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["DRIVE_MODE"], data, &dxl_error);
@@ -440,13 +479,56 @@ void dynamixelMotor::configDriveMode(bool REVERSE_MODE, bool SLAVE_MODE, bool TI
         ROS_ERROR("DMXL %d: Failed to change the drive mode configuration. Error code: %d", this->ID, dxl_error);
     } else 
     {
-        ROS_INFO("DMXL %d: Drive mode configuration changed. ",this->ID);
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Drive mode configuration changed.",this->ID);      
+        this->showDriveModeConfig();
     }
+
 }
 
 std::string dynamixelMotor::getOperatingMode()
 {
-    
+    uint8_t *op_mode = new uint8_t[1];
+    uint8_t dxl_error;
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["OPERATING_MODE"], op_mode, &dxl_error);
+
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the operating mode. Error code: %d",this->ID,dxl_error);
+        return nullptr;
+    } else 
+    {
+        switch (static_cast<int>(*op_mode))
+        {
+            case dynamixelMotor::CURRENT_CONTROL_MODE:
+                return "Current Control";
+            break;
+
+            case dynamixelMotor::VELOCITY_CONTROL_MODE:
+                return "Velocity Control";
+            break;
+
+            case dynamixelMotor::POSITION_CONTROL_MODE:
+                return "Position Control";
+            break;
+
+            case dynamixelMotor::EXTENDED_POSITION_CONTROL_MODE:
+                return "Extenden Position Control";
+            break;
+
+            case dynamixelMotor::CURRENT_BASED_POSITION_CONTROL:
+                return "Current Based Position Control";
+            break;
+
+            case dynamixelMotor::PWM_CONTROL_MODE:
+                return "PWM Control";
+            break;
+        
+            default:
+                return "Unknown mode";
+            break;
+        }
+    }
 }
 
 void dynamixelMotor::setOperatingMode(int MODE)

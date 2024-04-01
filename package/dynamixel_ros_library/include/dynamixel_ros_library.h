@@ -5,7 +5,7 @@
 #include <dynamixel_sdk.h>
 
 // OPERATING MODES (idk if necessary)
-enum class operatingMode{
+/*enum class operatingMode{
     CURRENT_CONTROL = 0,
     VELOCITY_CONTROL = 1,
     POSITION_CONTROL = 3,
@@ -13,6 +13,7 @@ enum class operatingMode{
     CURRENT_BASED_POSITION_CONTROL = 5,
     PWM_CONTROL = 16
 };
+*/
 
 // CLASS DEFINITION
 class dynamixelMotor
@@ -53,6 +54,7 @@ class dynamixelMotor
 
         // Config methods
         void configDriveMode(bool REVERSE_MODE, bool SLAVE_MODE, bool TIME_BASED_PROFILE, bool TORQUE_AUTO_ON);
+        void showDriveModeConfig();
         
     private:
         // MAPS USED TO CHANGE BETWEEN DIFF EEPROM CONTROL TABLES
