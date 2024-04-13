@@ -529,9 +529,197 @@ std::string dynamixelMotor::getOperatingMode()
             break;
         }
     }
+
+    delete[] op_mode;
 }
 
 void dynamixelMotor::setOperatingMode(int MODE)
 {
+    int dxl_comm_result = 0;
+    uint8_t dxl_error = 0;
+    bool modeExists = (MODE == dynamixelMotor::CURRENT_CONTROL_MODE || MODE == dynamixelMotor::VELOCITY_CONTROL_MODE ||
+                       MODE == dynamixelMotor::POSITION_CONTROL_MODE || MODE == dynamixelMotor::EXTENDED_POSITION_CONTROL_MODE ||
+                       MODE == dynamixelMotor::EXTENDED_POSITION_CONTROL_MODE || MODE == dynamixelMotor::PWM_CONTROL_MODE);
 
+    if(modeExists)
+    {
+        dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["OPERATING_MODE"], MODE, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the operatin mode. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Changed the operating mode.", this->ID);
+        }
+
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid DMXL operating mode.", this->ID);
+    }
 }
+
+int dynamixelMotor::getShadowID()
+{
+    uint8_t dxl_error = 0;
+    uint8_t *data = new uint8_t[1];
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["SECONDARY_ID"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the secondary ID. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        int shadow_id = static_cast<int>(*data);
+
+        if(shadow_id > 252)
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Current shadow id: %d (disabled) ",this->ID,shadow_id);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Current shadow id: %d",this->ID,shadow_id);
+        }
+        return shadow_id;
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setShadowID(int NEW_SH_ID)
+{
+    // Before using, please learn about shadow (secondary) ID and its usage.
+    uint8_t dxl_error = 0;
+
+    if(NEW_SH_ID >= 0 && NEW_SH_ID < 256)
+    {
+        int dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["SECONDARY_ID"], NEW_SH_ID, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the secondary ID. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            if(NEW_SH_ID == 253 || NEW_SH_ID == 254 || NEW_SH_ID == 255)
+            {
+                ROS_INFO("\033[1;35mDMXL %d\033[0m: Secondary ID was set to %d (disabled).", this->ID, NEW_SH_ID);
+
+            } else {
+                ROS_INFO("\033[1;35mDMXL %d\033[0m: Changed the secondary ID. New secondary ID: %d", this->ID, NEW_SH_ID);
+            }
+        }
+
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid DMXL SHADOW ID(0 - 255)", this->ID);
+    }
+}
+
+int dynamixelMotor::getProcotolType()
+{
+    uint8_t dxl_error = 0;
+    uint8_t *data = new uint8_t[1];
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["PROTOCOL_TYPE"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the protocol type. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current protocol type: %d.0",this->ID,static_cast<int>(*data));
+        return static_cast<int>(*data);
+    }
+
+    delete[] data;
+}
+
+int dynamixelMotor::getHomingOffset()
+{
+    uint8_t dxl_error = 0;
+    uint32_t *data = new uint32_t[1];
+
+    int dxl_comm_result = myPacketHandler->read4ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["HOMING_OFFSET"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the homing offset. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        double degrees = static_cast<double>(*data)* 0.088;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current homing offset is: %.1f degrees",this->ID,degrees);
+        return static_cast<int>(*data);
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setHomingOffset(int DEGREES)
+{
+    uint8_t dxl_error = 0;
+
+    if((DEGREES/360) >= -255 && (DEGREES/360) <= 255)
+    {
+        int dxl_comm_result = myPacketHandler->write4ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["HOMING_OFFSET"], (DEGREES/0.088), &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the homing offset. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Changed the homing offset. New homing offset: %d degrees", this->ID, DEGREES);
+        }
+
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid HOMING OFFSET(between 255rev and -255rev)", this->ID);
+    }
+}
+
+double dynamixelMotor::getMovingThreshold()
+{
+    uint8_t dxl_error = 0;
+    uint32_t *data = new uint32_t[1];
+
+    int dxl_comm_result = myPacketHandler->read4ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["MOVING_THRESHOLD"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the moving threshold. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        double RPM = static_cast<double>(*data) * 0.229;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current moving threshold is: %.1f rpm",this->ID,RPM);
+        return RPM;
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setMovingThreshold(double RPM)
+{
+    uint8_t dxl_error = 0;
+    float conversion = 0.229;
+
+    if(RPM >= 0 && RPM <= 235)
+    {
+        int dxl_comm_result = myPacketHandler->write4ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["MOVING_THRESHOLD"], (RPM/conversion), &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the moving threshold. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Changed the moving threshold. New moving threshold: %.1f rpm", this->ID, RPM);
+        }
+
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid moving threshold(between 0rpm and 235rpm)", this->ID);
+    }
+}
+

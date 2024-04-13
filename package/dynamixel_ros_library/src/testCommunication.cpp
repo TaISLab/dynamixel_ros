@@ -31,5 +31,20 @@ int main(int argc, char *argv[])
     std::printf(J1.getOperatingMode().c_str());
     std::printf("\n");
 
+    J1.setOperatingMode(dynamixelMotor::POSITION_CONTROL_MODE);
+    J1.getShadowID();
+    J1.setShadowID(253);
+
+    J1.getProcotolType();
+    J1.getHomingOffset();
+    J1.setHomingOffset(360);
+    J1.getHomingOffset();
+
+    J1.getMovingThreshold();
+    J1.setMovingThreshold(0);
+    J1.getMovingThreshold();
+
+
+
     return 1;
 }

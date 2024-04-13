@@ -52,6 +52,18 @@ class dynamixelMotor
         std::string getOperatingMode();
         void setOperatingMode(int MODE);
 
+        int getShadowID();
+        void setShadowID(int NEW_SH_ID);
+
+        int getProcotolType();
+        // void setProtocolType(int PROTOCOL_TYPE);  not implemented at the moment
+
+        int getHomingOffset(); // returns degrees
+        void setHomingOffset(int DEGREES);
+
+        double getMovingThreshold();
+        void setMovingThreshold(double RPM);
+
         // Config methods
         void configDriveMode(bool REVERSE_MODE, bool SLAVE_MODE, bool TIME_BASED_PROFILE, bool TORQUE_AUTO_ON);
         void showDriveModeConfig();
