@@ -64,6 +64,30 @@ class dynamixelMotor
         double getMovingThreshold();
         void setMovingThreshold(double RPM);
 
+        int getTempLimit();    // REGISTERS 70 and 63 need to be modified to shutdown when T is too much
+        void setTempLimit(int TEMPERATURE);
+
+        float getMaxVoltageLimit();   //SAME
+        void setMaxVoltageLimit(float MAX_VOLTAGE);
+
+        float getMinVoltageLimit();
+        void setMinVoltageLimit(float MIN_VOLTAGE);
+
+        int getPWMLimit();
+        void setPWMLimit(int PWM);
+
+        float getCurrentLimit();
+        void setCurrentLimit(float CURRENT_mA);
+        //
+        int getVelLimit();
+        void setVelLimit(int VEL_LIMIT_RPM);
+
+        int getMaxPosLimit();
+        void setMaxPosLimit(int MAX_POS_LIMIT_DEGREES);
+        
+        int getMinPosLimit();
+        void setMinPosLimit(int MIN_POS_LIMIT_DEGREES);
+        
         // Config methods
         void configDriveMode(bool REVERSE_MODE, bool SLAVE_MODE, bool TIME_BASED_PROFILE, bool TORQUE_AUTO_ON);
         void showDriveModeConfig();

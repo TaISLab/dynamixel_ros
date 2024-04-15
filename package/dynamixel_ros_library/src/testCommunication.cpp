@@ -44,6 +44,25 @@ int main(int argc, char *argv[])
     J1.setMovingThreshold(0);
     J1.getMovingThreshold();
 
+    J1.getTempLimit();
+    J1.setTempLimit(78);
+    J1.getTempLimit();
+
+    J1.getMaxVoltageLimit();
+    J1.setMaxVoltageLimit(16);
+    J1.getMaxVoltageLimit();
+
+    J1.getMinVoltageLimit();
+    J1.setMinVoltageLimit(9.5);
+    J1.getMinVoltageLimit();
+
+    J1.getPWMLimit();
+    J1.setPWMLimit(100);
+    J1.getPWMLimit();
+
+    J1.getCurrentLimit();
+    J1.setCurrentLimit(3200);
+    J1.getCurrentLimit();
 
 
     return 1;

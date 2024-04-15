@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Site BuildName="(empty)"
-	BuildStamp="20240413-0829-Experimental"
+	BuildStamp="20240414-1008-Experimental"
 	Name="MaxPC"
 	Generator="ctest-3.16.3"
 	CompilerName="/usr/bin/c++"
 	CompilerVersion="9.4.0"
 	OSName="Linux"
 	Hostname="MaxPC"
-	OSRelease="5.15.0-101-generic"
-	OSVersion="#111~20.04.1-Ubuntu SMP Mon Mar 11 15:44:43 UTC 2024"
+	OSRelease="5.15.0-102-generic"
+	OSVersion="#112~20.04.1-Ubuntu SMP Thu Mar 14 14:28:24 UTC 2024"
 	OSPlatform="x86_64"
 	Is64Bits="1"
 	VendorString="GenuineIntel"
@@ -21,14 +21,14 @@
 	TotalVirtualMemory="2047"
 	TotalPhysicalMemory="7626"
 	LogicalProcessorsPerPhysical="2"
-	ProcessorClockFrequency="2300"
+	ProcessorClockFrequency="1200"
 	>
 	<Testing>
-		<StartDateTime>Apr 13 12:42 CEST</StartDateTime>
-		<StartTestTime>1713004924</StartTestTime>
+		<StartDateTime>Apr 14 12:08 CEST</StartDateTime>
+		<StartTestTime>1713089302</StartTestTime>
 		<TestList/>
-		<EndDateTime>Apr 13 12:42 CEST</EndDateTime>
-		<EndTestTime>1713004924</EndTestTime>
+		<EndDateTime>Apr 14 12:08 CEST</EndDateTime>
+		<EndTestTime>1713089302</EndTestTime>
 		<ElapsedMinutes>0</ElapsedMinutes>
 	</Testing>
 </Site>

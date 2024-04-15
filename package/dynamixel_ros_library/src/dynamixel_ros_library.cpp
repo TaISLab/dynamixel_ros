@@ -723,3 +723,223 @@ void dynamixelMotor::setMovingThreshold(double RPM)
     }
 }
 
+int dynamixelMotor::getTempLimit()
+{
+    uint8_t dxl_error = 0;
+    uint8_t *data = new uint8_t[1];
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["TEMPERATURE_LIMIT"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the temperature limit. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current temperature limit is: %d C",this->ID,static_cast<int>(*data));
+        return static_cast<int>(*data);
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setTempLimit(int TEMPERATURE)
+{
+    uint8_t dxl_error = 0;
+
+    if(TEMPERATURE >= 0 && TEMPERATURE <= 100)
+    {
+        int dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["TEMPERATURE_LIMIT"], TEMPERATURE, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the temperature limit. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Temperature limit changed to: %d C", this->ID, TEMPERATURE);
+        }
+
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid temperature limit(0-100C)", this->ID);
+    }
+}
+
+float dynamixelMotor::getMaxVoltageLimit()
+{
+    uint8_t dxl_error = 0;
+    uint16_t *data = new uint16_t[1];
+
+    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["MAX_VOLTAGE_LIMIT"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the max voltage limit. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        float voltage = static_cast<float>(*data)/10;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current max voltage limit is: %.1f V",this->ID,voltage);
+        return voltage;
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setMaxVoltageLimit(float MAX_VOLTAGE)
+{
+    uint8_t dxl_error = 0;
+    int conversion = 10;
+
+    if(MAX_VOLTAGE >= 9.5 && MAX_VOLTAGE <= 16)
+    {
+        int dxl_comm_result = myPacketHandler->write2ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["MAX_VOLTAGE_LIMIT"], MAX_VOLTAGE*conversion, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the max voltage limit. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Max voltage limit changed to: %.1f V", this->ID, MAX_VOLTAGE);
+        }
+
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid max voltage limit(9.5-16V)", this->ID);
+    }
+}
+
+float dynamixelMotor::getMinVoltageLimit()
+{
+    uint8_t dxl_error = 0;
+    uint16_t *data = new uint16_t[1];
+
+    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["MIN_VOLTAGE_LIMIT"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the min voltage limit. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        float voltage = static_cast<float>(*data)/10;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current min voltage limit is: %.1f V",this->ID,voltage);
+        return voltage;
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setMinVoltageLimit(float MIN_VOLTAGE)
+{
+    uint8_t dxl_error = 0;
+    int conversion = 10;
+
+    if(MIN_VOLTAGE >= 9.5 && MIN_VOLTAGE <= 16)
+    {
+        int dxl_comm_result = myPacketHandler->write2ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["MIN_VOLTAGE_LIMIT"], MIN_VOLTAGE*conversion, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the min voltage limit. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Min voltage limit changed to: %.1f V", this->ID, MIN_VOLTAGE);
+        }
+
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid min voltage limit(9.5-16V)", this->ID);
+    }
+}
+
+int dynamixelMotor::getPWMLimit()
+{
+    uint8_t dxl_error = 0;
+    uint16_t *data = new uint16_t[1];
+    float conversion = 0.113;
+
+    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["PWM_LIMIT"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the PWM limit. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        float voltage_percentage = static_cast<int>(*data) * conversion;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current PWM limit is: %.1f %%",this->ID,voltage_percentage);
+        return voltage_percentage;
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setPWMLimit(int PWM)
+{
+    uint8_t dxl_error = 0;
+    float conversion = 1/0.113;
+
+    if(PWM >= 0 && PWM <= 100)
+    {
+        int dxl_comm_result = myPacketHandler->write2ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["PWM_LIMIT"], (int)PWM*conversion, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the PWM limit. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: PWM limit changed to: %.1f %%", this->ID, (float)PWM);
+        }
+
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid PWM limit(0-100%%)", this->ID);
+    }
+}
+
+float dynamixelMotor::getCurrentLimit()
+{
+    uint8_t dxl_error = 0;
+    uint16_t *data = new uint16_t[1];
+    float conversion = 2.69;
+
+    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["CURRENT_LIMIT"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the current limit. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        float current_mA = static_cast<int>(*data) * conversion;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current limit is: %.1f mA",this->ID,current_mA);
+        return current_mA;
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setCurrentLimit(float CURRENT_mA)
+{
+    uint8_t dxl_error = 0;
+    float conversion = 1/2.69;
+
+    if(CURRENT_mA >= 0 && CURRENT_mA <= 3200)
+    {
+        int dxl_comm_result = myPacketHandler->write2ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["CURRENT_LIMIT"], (int)CURRENT_mA*conversion, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the current limit. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Current limit changed to: %.1f mA", this->ID, CURRENT_mA);
+        }
+
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid current limit(0-3200mA)", this->ID);
+    }
+}
+
