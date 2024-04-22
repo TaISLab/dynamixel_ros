@@ -73,7 +73,40 @@ std::map<std::string, int> dynamixelMotor::ADDR_DMXL22 = {
     {"MAX_POSITION_LIMIT", 48},
     {"MIN_POSITION_LIMIT", 52},
     {"STARTUP_CONFIGURATION", 60},
-    {"SHUTDOWN", 63}
+    {"SHUTDOWN", 63},
+
+    // RAM AREA
+    {"TORQUE_ENABLE", 64},
+    {"LED", 65},
+    {"STATUS_RETURN_LEVEL", 68},
+    {"REGISTERED_INSTRUCTION", 69},
+    {"HARDWARE_ERROR_STATUS", 70},
+    {"VELOCITY_I_GAIN", 76},
+    {"VELOCITY_P_GAIN", 78},
+    {"POSITION_D_GAIN", 80},
+    {"POSITION_I_GAIN", 82},
+    {"POSITION_P_GAIN", 84},
+    {"FEEDFORWARD_2nd_GAIN", 88},
+    {"FEEDFORWARD_1st_GAIN", 90},
+    {"BUS_WATCHDOG", 98},
+    {"GOAL_PWM", 100},
+    {"GOAL_CURRENT", 102},
+    {"GOAL_VELOCITY", 104},
+    {"PROFILE_ACCELERATION", 108},
+    {"PROFILE_VELOCITY", 112},
+    {"GOAL_POSITION", 116},
+    {"REALTIME_TICK", 120},
+    {"MOVING", 122},
+    {"MOVING_STATUS", 123},
+    {"PRESENT_PWM", 124},
+    {"PRESENT_CURRENT", 126},
+    {"PRESENT_VELOCITY", 128},
+    {"PRESENT_POSITION", 132},
+    {"VELOCITY_TRAJECTORY", 136},
+    {"POSITION_TRAJECTORY", 140},
+    {"PRESENT_INPUT_VOLTAGE", 144},
+    {"PRESENT_TEMPERATURE", 146},
+    {"BACKUP_READY", 147}
 };
 
 // Compatibility: XD540, XH540, XM540, 
@@ -103,7 +136,40 @@ std::map<std::string, int> dynamixelMotor::ADDR_DMXL25 = {
     {"EXTERNAL_PORT_MODE_2", 57},
     {"EXTERNAL_PORT_MODE_3", 58},
     {"STARTUP_CONFIGURATION", 60},
-    {"SHUTDOWN", 63}
+    {"SHUTDOWN", 63},
+
+    // RAM AREA
+    {"TORQUE_ENABLE", 64},
+    {"LED", 65},
+    {"STATUS_RETURN_LEVEL", 68},
+    {"REGISTERED_INSTRUCTION", 69},
+    {"HARDWARE_ERROR_STATUS", 70},
+    {"VELOCITY_I_GAIN", 76},
+    {"VELOCITY_P_GAIN", 78},
+    {"POSITION_D_GAIN", 80},
+    {"POSITION_I_GAIN", 82},
+    {"POSITION_P_GAIN", 84},
+    {"FEEDFORWARD_2nd_GAIN", 88},
+    {"FEEDFORWARD_1st_GAIN", 90},
+    {"BUS_WATCHDOG", 98},
+    {"GOAL_PWM", 100},
+    {"GOAL_CURRENT", 102},
+    {"GOAL_VELOCITY", 104},
+    {"PROFILE_ACCELERATION", 108},
+    {"PROFILE_VELOCITY", 112},
+    {"GOAL_POSITION", 116},
+    {"REALTIME_TICK", 120},
+    {"MOVING", 122},
+    {"MOVING_STATUS", 123},
+    {"PRESENT_PWM", 124},
+    {"PRESENT_CURRENT", 126},
+    {"PRESENT_VELOCITY", 128},
+    {"PRESENT_POSITION", 132},
+    {"VELOCITY_TRAJECTORY", 136},
+    {"POSITION_TRAJECTORY", 140},
+    {"PRESENT_INPUT_VOLTAGE", 144},
+    {"PRESENT_TEMPERATURE", 146},
+    {"BACKUP_READY", 147}
 };
 
 
@@ -943,3 +1009,315 @@ void dynamixelMotor::setCurrentLimit(float CURRENT_mA)
     }
 }
 
+float dynamixelMotor::getVelLimit()
+{
+    uint8_t dxl_error = 0;
+    uint32_t *data = new uint32_t[1];
+    float conversion = 0.229;
+
+    int dxl_comm_result = myPacketHandler->read4ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["VELOCITY_LIMIT"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the velocity limit. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        float VELOCITY_RPM = static_cast<int>(*data) * conversion;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current velocity limit is: %.1f rpm",this->ID,VELOCITY_RPM);
+        return VELOCITY_RPM;
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setVelLimit(float VEL_LIMIT_RPM)
+{
+    uint8_t dxl_error = 0;
+    float conversion = 1/0.229;
+
+    if(VEL_LIMIT_RPM >= 0 && VEL_LIMIT_RPM <= 234)
+    {
+        int dxl_comm_result = myPacketHandler->write4ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["VELOCITY_LIMIT"], (int)VEL_LIMIT_RPM*conversion, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the velocity limit. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Velocity limit changed to: %.1f rpm", this->ID, VEL_LIMIT_RPM);
+        }
+
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid velocity limit(0-324rpm)", this->ID);
+    }
+}
+
+float dynamixelMotor::getMaxPosLimit()
+{
+    uint8_t dxl_error = 0;
+    uint32_t *data = new uint32_t[1];
+    float conversion = 0.088;
+
+    int dxl_comm_result = myPacketHandler->read4ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["MAX_POSITION_LIMIT"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the max. position limit. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        float MAX_POS_LIMIT_DEGREES = static_cast<int>(*data) * conversion;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Max. position limit is: %.1f degrees",this->ID,MAX_POS_LIMIT_DEGREES);
+        return MAX_POS_LIMIT_DEGREES;
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setMaxPosLimit(float MAX_POS_LIMIT_DEGREES)
+{
+    uint8_t dxl_error = 0;
+    float conversion = 1/0.088;
+
+    if(MAX_POS_LIMIT_DEGREES >= 0 && MAX_POS_LIMIT_DEGREES <= 360)
+    {
+        int dxl_comm_result = myPacketHandler->write4ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["MAX_POSITION_LIMIT"], (int)MAX_POS_LIMIT_DEGREES*conversion, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the max. position limit. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Max. position limit changed to: %.1f degrees", this->ID, MAX_POS_LIMIT_DEGREES);
+        }
+
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid max. position limit(0-360 degrees)", this->ID);
+    }
+}
+
+float dynamixelMotor::getMinPosLimit()
+{
+    uint8_t dxl_error = 0;
+    uint32_t *data = new uint32_t[1];
+    float conversion = 0.088;
+
+    int dxl_comm_result = myPacketHandler->read4ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["MIN_POSITION_LIMIT"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the min. position limit. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        float MIN_POS_LIMIT_DEGREES = static_cast<int>(*data) * conversion;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Min. position limit is: %.1f degrees",this->ID,MIN_POS_LIMIT_DEGREES);
+        return MIN_POS_LIMIT_DEGREES;
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setMinPosLimit(float MIN_POS_LIMIT_DEGREES)
+{
+    uint8_t dxl_error = 0;
+    float conversion = 1/0.088;
+
+    if(MIN_POS_LIMIT_DEGREES >= 0 && MIN_POS_LIMIT_DEGREES <= 360)
+    {
+        int dxl_comm_result = myPacketHandler->write4ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["MIN_POSITION_LIMIT"], (int)MIN_POS_LIMIT_DEGREES*conversion, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the min. position limit. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Min. position limit changed to: %.1f degrees", this->ID, MIN_POS_LIMIT_DEGREES);
+        }
+
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid max. position limit(0-360 degrees)", this->ID);
+    }
+}
+
+void dynamixelMotor::showStartupConfig()
+{
+    uint8_t *config = new uint8_t[1];
+    uint8_t dxl_error;
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["STARTUP_CONFIGURATION"], config, &dxl_error);
+
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the startup configuration. Error code: %d",this->ID,dxl_error);
+    } else 
+    {
+        bool TORQUE_ON = (*config & 0b00000001) != 0;
+        bool RAM_RESTORE = (*config & 0b00000010) != 0;
+
+        std::string s_torque_on, s_ram_restore;
+        s_torque_on = TORQUE_ON ? "ON" : "OFF";
+        s_ram_restore = RAM_RESTORE ? "ON" : "OFF";
+
+        ROS_INFO("\n \033[0;35mStartup config\033[0m \n TORQUE ON: %s \n RAM RESTORE: %s",
+        s_torque_on.c_str(), s_ram_restore.c_str());
+    }
+
+    delete[] config;
+}
+
+void dynamixelMotor::configStartup(bool TORQUE_ON, bool RAM_RESTORE)
+{
+    // FOR MORE INFO ABOUT PARAMS, CHECK DYNAMIXEL SDK
+    uint8_t dxl_error = 0;
+    uint8_t data = 0;
+
+    if (TORQUE_ON)
+    {
+        data |= (1 << 0);  // Set bit 0
+    }
+
+    if (RAM_RESTORE)
+    {
+        data |= (1 << 1);  // Set bit 1
+    }
+
+    int dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["STARTUP_CONFIGURATION"], data, &dxl_error);
+
+    if (dxl_comm_result != COMM_SUCCESS)    
+    {
+        ROS_ERROR("DMXL %d: Failed to change the startup configuration. Error code: %d", this->ID, dxl_error);
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Startup configuration changed.",this->ID);      
+        this->showStartupConfig();
+    }
+}
+
+void dynamixelMotor::showShutdownConfig()
+{
+    uint8_t *config = new uint8_t[1];
+    uint8_t dxl_error;
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["SHUTDOWN"], config, &dxl_error);
+
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the shutdown configuration. Error code: %d",this->ID,dxl_error);
+    } else 
+    {
+        bool INPUT_VOLTAGE_ERROR = (*config & 0b00000001) != 0;
+        bool OVERHEATING_ERROR = (*config & 0b00000100) != 0;
+        bool ENCODER_ERROR = (*config & 0b00001000) != 0;
+        bool ELECTRICAL_SHOCK_ERROR = (*config & 0b00010000) != 0;
+        bool OVERLOAD_ERROR = (*config & 0b00100000) != 0;
+
+
+        std::string s_input_voltage_error, s_overheating_error, s_encoder_error, s_electrical_shock_error, s_overload_error;
+        s_input_voltage_error = INPUT_VOLTAGE_ERROR ? "ON" : "OFF";
+        s_overheating_error = OVERHEATING_ERROR ? "ON" : "OFF";
+        s_encoder_error = ENCODER_ERROR ? "ON" : "OFF";
+        s_electrical_shock_error = ELECTRICAL_SHOCK_ERROR ? "ON" : "OFF";
+        s_overload_error = OVERLOAD_ERROR ? "ON" : "OFF";
+
+        ROS_INFO("\n \033[0;35mShutdown config\033[0m \n INPUT VOLTAGE ERROR: %s \n OVERHEATING ERROR: %s \n ENCODER ERROR: %s \n ELECTRICAL SHOCK ERROR: %s \n OVERLOAD ERROR: %s",
+        s_input_voltage_error.c_str(), s_overheating_error.c_str(), s_encoder_error.c_str(), s_electrical_shock_error.c_str(), s_overload_error.c_str());
+    }
+
+    delete[] config;
+}
+
+void dynamixelMotor::configShutdown(bool INPUT_VOLTAGE_ERROR, bool OVERHEATING_ERROR, bool ENCODER_ERROR, bool ELECTRICAL_SHOCK_ERROR, bool OVERLOAD_ERROR)
+{
+    // FOR MORE INFO ABOUT PARAMS, CHECK DYNAMIXEL SDK
+    uint8_t dxl_error = 0;
+    uint8_t data = 0;
+
+    if (INPUT_VOLTAGE_ERROR)
+    {
+        data |= (1 << 0);  // Set bit 0
+    }
+
+    if (OVERHEATING_ERROR)
+    {
+        data |= (1 << 2);  // Set bit 2
+    }
+
+    if (ENCODER_ERROR)
+    {
+        data |= (1 << 3);  // Set bit 3
+    }
+
+    if (ELECTRICAL_SHOCK_ERROR)
+    {
+        data |= (1 << 4);  // Set bit 4
+    }
+
+    if (OVERLOAD_ERROR)
+    {
+        data |= (1 << 5);  // Set bit 5
+    }
+
+    int dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["SHUTDOWN"], data, &dxl_error);
+
+    if (dxl_comm_result != COMM_SUCCESS)    
+    {
+        ROS_ERROR("DMXL %d: Failed to change the shutdown configuration. Error code: %d", this->ID, dxl_error);
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Shutdown configuration changed.",this->ID);      
+        this->showShutdownConfig();
+    }
+}
+
+bool dynamixelMotor::getTorqueState()
+{
+    uint8_t dxl_error = 0;
+    uint8_t *data = new uint8_t[1];
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["TORQUE_ENABLE"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the torque state. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        bool torque_state;
+        std::string s_torque_state;
+        if(static_cast<int>(*data) == 0)
+        {
+            torque_state = false;
+            s_torque_state = "OFF";
+        } else 
+        {
+            torque_state = true;
+            s_torque_state = "ON";
+        }
+
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Torque is: %s",this->ID,s_torque_state.c_str());
+        return torque_state;
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setTorqueState(bool TORQUE_ENABLE)
+{
+    uint8_t dxl_error = 0;
+    std::string s_torque_state = TORQUE_ENABLE ? "ON" : "OFF";
+
+    int dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["TORQUE_ENABLE"], (int)TORQUE_ENABLE, &dxl_error);
+
+    if (dxl_comm_result != COMM_SUCCESS)    
+    {
+        ROS_ERROR("DMXL %d: Failed to change the torque state. Error code: %d",this->ID, dxl_error);
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Torque state is set to: %s", this->ID, s_torque_state.c_str());
+    }
+}

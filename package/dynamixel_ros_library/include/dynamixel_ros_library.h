@@ -79,18 +79,30 @@ class dynamixelMotor
         float getCurrentLimit();
         void setCurrentLimit(float CURRENT_mA);
         //
-        int getVelLimit();
-        void setVelLimit(int VEL_LIMIT_RPM);
+        float getVelLimit();
+        void setVelLimit(float VEL_LIMIT_RPM);
 
-        int getMaxPosLimit();
-        void setMaxPosLimit(int MAX_POS_LIMIT_DEGREES);
+        float getMaxPosLimit();
+        void setMaxPosLimit(float MAX_POS_LIMIT_DEGREES);
         
-        int getMinPosLimit();
-        void setMinPosLimit(int MIN_POS_LIMIT_DEGREES);
+        float getMinPosLimit();
+        void setMinPosLimit(float MIN_POS_LIMIT_DEGREES);
+
+        bool getTorqueState();
+        void setTorqueState(bool TORQUE_ENABLE);
+
+        bool getLedState();
+        void setLedState(bool LED_STATE);
         
         // Config methods
         void configDriveMode(bool REVERSE_MODE, bool SLAVE_MODE, bool TIME_BASED_PROFILE, bool TORQUE_AUTO_ON);
         void showDriveModeConfig();
+
+        void configStartup(bool TORQUE_ON, bool RAM_RESTORE); //try with other motor
+        void showStartupConfig();
+
+        void configShutdown(bool INPUT_VOLTAGE_ERROR, bool OVERHEATING_ERROR, bool ENCODER_ERROR, bool ELECTRICAL_SHOCK_ERROR, bool OVERLOAD_ERROR);
+        void showShutdownConfig();
         
     private:
         // MAPS USED TO CHANGE BETWEEN DIFF EEPROM CONTROL TABLES

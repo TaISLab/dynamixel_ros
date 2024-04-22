@@ -64,6 +64,18 @@ int main(int argc, char *argv[])
     J1.setCurrentLimit(3200);
     J1.getCurrentLimit();
 
+    J1.getVelLimit();
+    J1.setVelLimit(230);
+    J1.getVelLimit();
+
+    J1.getMaxPosLimit();
+    J1.getMinPosLimit();
+
+    J1.configStartup(true,true);
+
+    J1.configShutdown(false,true,false,true,true);
+
+    J1.getTorqueState();
 
     return 1;
 }
