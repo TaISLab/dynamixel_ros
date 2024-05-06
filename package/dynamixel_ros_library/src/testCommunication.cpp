@@ -1,6 +1,7 @@
 #include <dynamixel_ros_library.h>
 
-dynamixelMotor J1("J1",1);
+dynamixelMotor J1("J1",0);
+dynamixelMotor J2("J2",2);
 
 
 int main(int argc, char *argv[])
@@ -22,6 +23,7 @@ int main(int argc, char *argv[])
 
     dynamixelMotor::iniComm(port_name,protocol_version,baud_rate);
     J1.setControlTable();
+    J2.setControlTable();
 
     J1.getBaudrate();
     J1.setReturnDelayTime(2);
@@ -76,6 +78,19 @@ int main(int argc, char *argv[])
     J1.configShutdown(false,true,false,true,true);
 
     J1.getTorqueState();
+    J1.setTorqueState(true);
+    J1.getTorqueState();
+
+    J2.setTorqueState(true);
+    J2.getTorqueState();
+
+    J1.setLedState(false);
+    J2.setLedState(false);
+
+    J1.getLedState();
+    J2.getLedState();
+
+    std::vector<bool> mi_vector = J1.getHardwareErrorStatus();
 
     return 1;
 }

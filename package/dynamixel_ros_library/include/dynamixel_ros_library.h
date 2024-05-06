@@ -93,6 +93,17 @@ class dynamixelMotor
 
         bool getLedState();
         void setLedState(bool LED_STATE);
+
+        int getStatusReturnLevel();
+        void setStatusReturnLevel(int STATUS_RETURN_LEVEL);
+
+        std::vector<bool> getHardwareErrorStatus();
+
+        void getVelocityPIValues(int &P, int &I);
+        void setVelocityPIValues(int P, int I);
+
+        void getPositionPIDValues(int &P, int &I, int &D);
+        void setPositionPIDValues(int P, int I, int D);
         
         // Config methods
         void configDriveMode(bool REVERSE_MODE, bool SLAVE_MODE, bool TIME_BASED_PROFILE, bool TORQUE_AUTO_ON);

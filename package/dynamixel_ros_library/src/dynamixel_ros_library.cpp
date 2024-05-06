@@ -1321,3 +1321,200 @@ void dynamixelMotor::setTorqueState(bool TORQUE_ENABLE)
         ROS_INFO("\033[1;35mDMXL %d\033[0m: Torque state is set to: %s", this->ID, s_torque_state.c_str());
     }
 }
+
+bool dynamixelMotor::getLedState()
+{
+    uint8_t dxl_error = 0;
+    uint8_t *data = new uint8_t[1];
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["LED"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the LED state. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        bool led_state;
+        std::string s_led_state;
+        if(static_cast<int>(*data) == 0)
+        {
+            led_state = false;
+            s_led_state = "OFF";
+        } else 
+        {
+            led_state = true;
+            s_led_state = "ON";
+        }
+
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: LED is: %s",this->ID,s_led_state.c_str());
+        return led_state;
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setLedState(bool LED_STATE)
+{
+    uint8_t dxl_error = 0;
+    std::string s_led_state = LED_STATE ? "ON" : "OFF";
+
+    int dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["LED"], (int)LED_STATE, &dxl_error);
+
+    if (dxl_comm_result != COMM_SUCCESS)    
+    {
+        ROS_ERROR("DMXL %d: Failed to change the LED state. Error code: %d",this->ID, dxl_error);
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: LED state is set to: %s", this->ID, s_led_state.c_str());
+    }
+}
+
+int dynamixelMotor::getStatusReturnLevel()
+{
+    uint8_t dxl_error = 0;
+    uint8_t *data = new uint8_t[1];
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["STATUS_RETURN_PACKET"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the status return packet. Error code: %d", this->ID, dxl_error);
+        return -1;
+
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current Status Return Level is: %d", this->ID, static_cast<int>(*data));
+        return static_cast<int>(*data); 
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setStatusReturnLevel(int STATUS_RETURN_LEVEL)
+{
+    uint8_t dxl_error = 0;
+
+    int dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["STATUS_RETURN_LEVEL"], STATUS_RETURN_LEVEL, &dxl_error);
+
+    if (dxl_comm_result != COMM_SUCCESS)    
+    {
+        ROS_ERROR("DMXL %d: Failed to change the Status Return Level. Error code: %d",this->ID, dxl_error);
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Status Return Level is set to: %d", this->ID, STATUS_RETURN_LEVEL);
+    }
+
+}
+
+std::vector<bool> dynamixelMotor::getHardwareErrorStatus()
+{
+    std::vector<bool> errorStatus(8);
+    uint8_t dxl_error = 0;
+    uint8_t *data = new uint8_t[1];
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["HARDWARE_ERROR_STATUS"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the hardware error status. Error code: %d", this->ID, dxl_error);
+
+    } else 
+    {
+        
+        for(int i=0; i<errorStatus.size(); ++i)
+        {
+            bool bitValue = (data[0] >> i) & 1; 
+            errorStatus[i] = bitValue;
+        }
+        
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current Hardware Error status was saved.", this->ID);
+        ROS_INFO("\033[0;35mHardware error status\033[0m:");
+        for(size_t i=0; i<errorStatus.size(); ++i)
+        {
+            std::string error = "";
+            switch((int)i)
+            {
+                case 0:
+                    error = "Input Voltage Error";
+                break;
+
+                case 1:
+                case 6:
+                case 7:
+                    error = "Unused";
+                break;
+
+                case 2:
+                    error = "Overheating Error";
+                break;
+
+                case 3:
+                    error = "Motor Encoder Error";
+                break;
+
+                case 4:
+                    error = "Electrical Shock Error";
+                break;
+
+                case 5:
+                    error = "Overload Error";
+                break;
+
+                default:
+                break;
+            } 
+            ROS_INFO("%s [%zu]: %s",error.c_str(),i,errorStatus[i] ? "true" : "false");
+        }
+    }
+
+    return errorStatus;
+    delete[] data;
+}
+
+void dynamixelMotor::getVelocityPIValues(int &P, int &I)
+{
+    uint8_t dxl_error = 0;
+    uint16_t *data = new uint16_t[1];
+
+    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["VELOCITY_I_GAIN"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the velocity controllers 'I' component value. Error code: %d", this->ID, dxl_error);
+
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current velocity controller's 'I' components value is: %d", this->ID, static_cast<int>(*data));
+        I = static_cast<int>(*data); 
+    }
+
+    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["VELOCITY_P_GAIN"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the velocity controllers 'P' component value. Error code: %d", this->ID, dxl_error);
+
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current velocity controller's 'P' components value is: %d", this->ID, static_cast<int>(*data));
+        P = static_cast<int>(*data); 
+    }
+    
+    delete[] data;
+}
+
+void dynamixelMotor::setVelocityPIValues(int P, int I)
+{
+
+}
+
+void dynamixelMotor::getPositionPIDValues(int &P, int &I, int &D)
+{
+
+}
+
+void dynamixelMotor::setPositionPIDValues(int P, int I, int D)
+{
+
+}
