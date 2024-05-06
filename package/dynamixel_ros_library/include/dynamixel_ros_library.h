@@ -104,7 +104,31 @@ class dynamixelMotor
 
         void getPositionPIDValues(int &P, int &I, int &D);
         void setPositionPIDValues(int P, int I, int D);
-        
+
+        void getFeedforwardGains(int &FFG1, int &FFG2);
+        void setFeedforwardGains(int FFG1, int FFG2);
+
+        int getBusWatchdog();
+        void setBusWatchdog(int BUS_WATCHDOG_VALUE);
+
+        int getGoalPWM();
+        void setGoalPWM(int GOAL_PWM);
+
+        int getGoalCurrent();
+        void setGoalCurrent(int GOAL_CURRENT);
+
+        double getGoalVelocity();
+        void setGoalVelocity(double GOAL_VELOCITY);
+
+        double getProfileAcceleration();
+        void setProfileAcceleration(double PROFILE_ACCELERATION);
+
+        double getProfileVelocity();
+        void setProfileVelocity(double PROFILE_VELOCITY);
+
+        double getGoalPosition();
+        void setGoalPosition(double GOAL_POSITION);
+
         // Config methods
         void configDriveMode(bool REVERSE_MODE, bool SLAVE_MODE, bool TIME_BASED_PROFILE, bool TORQUE_AUTO_ON);
         void showDriveModeConfig();

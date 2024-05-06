@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
     J1.setControlTable();
     J2.setControlTable();
 
+    /*
     J1.getBaudrate();
     J1.setReturnDelayTime(2);
     int time = J1.getReturnDelayTime();
@@ -59,7 +60,7 @@ int main(int argc, char *argv[])
     J1.getMinVoltageLimit();
 
     J1.getPWMLimit();
-    J1.setPWMLimit(100);
+    J1.setPWMLimit(20);
     J1.getPWMLimit();
 
     J1.getCurrentLimit();
@@ -77,13 +78,6 @@ int main(int argc, char *argv[])
 
     J1.configShutdown(false,true,false,true,true);
 
-    J1.getTorqueState();
-    J1.setTorqueState(true);
-    J1.getTorqueState();
-
-    J2.setTorqueState(true);
-    J2.getTorqueState();
-
     J1.setLedState(false);
     J2.setLedState(false);
 
@@ -91,6 +85,38 @@ int main(int argc, char *argv[])
     J2.getLedState();
 
     std::vector<bool> mi_vector = J1.getHardwareErrorStatus();
+
+    int mP,mI,mD;
+    J1.setVelocityPIValues(200,2000);
+    J1.getVelocityPIValues(mP,mI);
+
+    J1.setPositionPIDValues(1000,100,100);
+    J1.getPositionPIDValues(mP,mI,mD);
+
+    int FFG1,FFG2;
+    J1.getFeedforwardGains(FFG1, FFG2);
+
+    J1.getBusWatchdog();
+    */
+
+    //PWM TRY
+    J1.setOperatingMode(dynamixelMotor::PWM_CONTROL_MODE);
+    J1.setPWMLimit(50);
+    J1.getPWMLimit();
+    J1.setTorqueState(true);
+    J1.getGoalPWM();
+    J1.setGoalPWM(50);
+    J1.getGoalPWM();
+
+
+    J2.getPWMLimit();
+    J2.setPWMLimit(50);
+    J2.getPWMLimit();
+
+    J2.setOperatingMode(dynamixelMotor::PWM_CONTROL_MODE);
+    J2.setTorqueState(true);
+    J2.setGoalPWM(40);
+
 
     return 1;
 }

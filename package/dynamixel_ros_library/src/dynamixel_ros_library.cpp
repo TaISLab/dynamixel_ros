@@ -933,9 +933,9 @@ int dynamixelMotor::getPWMLimit()
         return -1;
     } else 
     {
-        float voltage_percentage = static_cast<int>(*data) * conversion;
-        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current PWM limit is: %.1f %%",this->ID,voltage_percentage);
-        return voltage_percentage;
+        float PWM_percent = static_cast<int>(*data) * conversion;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current PWM limit is: %.1f %%",this->ID,PWM_percent);
+        return PWM_percent;
     }
 
     delete[] data;
@@ -1489,7 +1489,7 @@ void dynamixelMotor::getVelocityPIValues(int &P, int &I)
         I = static_cast<int>(*data); 
     }
 
-    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["VELOCITY_P_GAIN"], data, &dxl_error);
+    dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["VELOCITY_P_GAIN"], data, &dxl_error);
         
     if(dxl_comm_result != COMM_SUCCESS)
     {
@@ -1506,15 +1506,349 @@ void dynamixelMotor::getVelocityPIValues(int &P, int &I)
 
 void dynamixelMotor::setVelocityPIValues(int P, int I)
 {
+    uint8_t dxl_error = 0;
 
+    if(P >= 0 && P <= 16383)
+    {
+        int dxl_comm_result = myPacketHandler->write2ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["VELOCITY_P_GAIN"], P, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the velocity controllers 'P' component value. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: The velocity controllers 'P' component value is set to: %d", this->ID, P);
+        }
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid velocity controllers 'P' component value. (0 - 16.383)",this->ID);
+    }
+
+    if(I >= 0 && I <= 16383)
+    {
+        int dxl_comm_result = myPacketHandler->write2ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["VELOCITY_I_GAIN"], I, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the velocity controllers 'I' component value. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: The velocity controllers 'I' component value is set to: %d", this->ID, I);
+        }
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid velocity controllers 'I' component value. (0 - 16.383)",this->ID);
+    }
 }
 
 void dynamixelMotor::getPositionPIDValues(int &P, int &I, int &D)
 {
+    uint8_t dxl_error = 0;
+    uint16_t *data = new uint16_t[1];
 
+    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["POSITION_P_GAIN"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the position controllers 'P' component value. Error code: %d", this->ID, dxl_error);
+
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current position controller's 'P' components value is: %d", this->ID, static_cast<int>(*data));
+        P = static_cast<int>(*data); 
+    }
+
+    dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["POSITION_I_GAIN"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the position controllers 'I' component value. Error code: %d", this->ID, dxl_error);
+
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current position controller's 'I' components value is: %d", this->ID, static_cast<int>(*data));
+        I = static_cast<int>(*data); 
+    }
+
+    dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["POSITION_D_GAIN"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the position controllers 'D' component value. Error code: %d", this->ID, dxl_error);
+
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current position controller's 'D' components value is: %d", this->ID, static_cast<int>(*data));
+        D = static_cast<int>(*data); 
+    }
+    
+    delete[] data;
 }
 
 void dynamixelMotor::setPositionPIDValues(int P, int I, int D)
+{
+    uint8_t dxl_error = 0;
+
+    if(P >= 0 && P <= 16383)
+    {
+        int dxl_comm_result = myPacketHandler->write2ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["POSITION_P_GAIN"], P, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the position controllers 'P' component value. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: The position controllers 'P' component value is set to: %d", this->ID, P);
+        }
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid position controllers 'P' component value. (0 - 16.383)",this->ID);
+    }
+
+    if(I >= 0 && I <= 16383)
+    {
+        int dxl_comm_result = myPacketHandler->write2ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["POSITION_I_GAIN"], I, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the position controllers 'I' component value. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: The position controllers 'I' component value is set to: %d", this->ID, I);
+        }
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid position controllers 'I' component value. (0 - 16.383)",this->ID);
+    }
+
+    if(D >= 0 && D <= 16383)
+    {
+        int dxl_comm_result = myPacketHandler->write2ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["POSITION_D_GAIN"], D, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the position controllers 'D' component value. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: The position controllers 'D' component value is set to: %d", this->ID, D);
+        }
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid position controllers 'D' component value. (0 - 16.383)",this->ID);
+    }
+}
+
+void dynamixelMotor::getFeedforwardGains(int &FFG1, int &FFG2)
+{
+    uint8_t dxl_error = 0;
+    uint16_t *data = new uint16_t[1];
+
+    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["FEEDFORWARD_1st_GAIN"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the feedforward 1st gain value. Error code: %d", this->ID, dxl_error);
+
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current feedforward 1st gain value is: %d", this->ID, static_cast<int>(*data));
+        FFG1 = static_cast<int>(*data); 
+    }
+
+    dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["FEEDFORWARD_2nd_GAIN"], data, &dxl_error);
+    
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the feedforward 2nd gain value. Error code: %d", this->ID, dxl_error);
+
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current feedforward 2nd gain value is: %d", this->ID, static_cast<int>(*data));
+        FFG2 = static_cast<int>(*data); 
+    }
+    
+    delete[] data;
+}
+
+void dynamixelMotor::setFeedforwardGains(int FFG1, int FFG2)
+{
+    uint8_t dxl_error = 0;
+
+    if(FFG1 >= 0 && FFG2 <= 16383)
+    {
+        int dxl_comm_result = myPacketHandler->write2ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["FEEDFORWARD_1st_GAIN"], FFG1, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the feedforward 1st gain value. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: The feedforward 1st gain value is set to: %d", this->ID, FFG1);
+        }
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid feedforward 1st gain value. (0 - 16.383)",this->ID);
+    }
+
+    if(FFG2 >= 0 && FFG2 <= 16383)
+    {
+        int dxl_comm_result = myPacketHandler->write2ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["FEEDFORWARD_2nd_GAIN"],FFG2, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the feedforward 2nd gain value. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: The feedforward 2nd gain value is set to: %d", this->ID, FFG2);
+        }
+    } else
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid feedforward 2nd gain value. (0 - 16.383)",this->ID);
+    }
+}
+
+int dynamixelMotor::getBusWatchdog()
+{
+    uint8_t dxl_error = 0;
+    uint8_t *data = new uint8_t[1];
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["BUS_WATCHDOG"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the bus watchdog state. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        int bw_value = static_cast<int>(*data);
+
+        if(bw_value == 0)
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Current bus watchdog value is: %d (Disabled)",this->ID, bw_value);
+        } else
+        {
+            int bw_time_ms = bw_value*20;
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Current bus watchdog value is: %d (%dms)",this->ID, bw_value, bw_time_ms);
+        }
+
+        return bw_value;
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setBusWatchdog(int BUS_WATCHDOG_VALUE)
+{
+    uint8_t dxl_error = 0;
+
+    int dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["BUS_WATCHDOG"], BUS_WATCHDOG_VALUE, &dxl_error);
+
+    if (dxl_comm_result != COMM_SUCCESS)    
+    {
+        ROS_ERROR("DMXL %d: Failed to change the bus watchdog state. Error code: %d",this->ID, dxl_error);
+    } else 
+    {
+        int BUS_WATCHDOG_TIME = BUS_WATCHDOG_VALUE*20;
+        if(BUS_WATCHDOG_VALUE == 0)
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Bus watchdog value is set to: %d (Disabled)", this->ID, BUS_WATCHDOG_VALUE);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Bus watchdog value is set to: %d (%d ms)", this->ID, BUS_WATCHDOG_VALUE, BUS_WATCHDOG_TIME);
+        }
+    }
+}
+
+int dynamixelMotor::getGoalPWM()
+{
+    uint8_t dxl_error = 0;
+    uint16_t *data = new uint16_t[1];
+    float conversion_to_percent = 0.113;
+
+    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["GOAL_PWM"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the goal PWM. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        float percent_PWM = static_cast<int>(*data)*conversion_to_percent;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current goal PWM is: %d (%.1f %%)",this->ID, static_cast<int>(*data),percent_PWM);
+        return percent_PWM;
+    }
+
+    delete[] data;
+}
+
+void dynamixelMotor::setGoalPWM(int GOAL_PWM)
+{
+    uint8_t dxl_error = 0;
+    float conversion = 1/0.113;
+
+    if(GOAL_PWM <= this->getPWMLimit())
+    {
+        int dxl_comm_result = myPacketHandler->write2ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["GOAL_PWM"], (int)conversion*GOAL_PWM, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the goal PWM. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Goal PWM is set to: %d (%.1f %%)", this->ID, (int)conversion*GOAL_PWM, GOAL_PWM);
+        }
+    } else 
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid goal PWM (Must be lower than PWM Limit of:%d).",this->ID, this->getPWMLimit());
+    }
+}
+
+int dynamixelMotor::getGoalCurrent()
+{
+
+}
+
+void dynamixelMotor::setGoalCurrent(int GOAL_CURRENT)
+{
+
+}
+
+double dynamixelMotor::getGoalVelocity()
+{
+
+}
+
+void dynamixelMotor::setGoalVelocity(double GOAL_VELOCITY)
+{
+
+}
+
+double dynamixelMotor::getProfileAcceleration()
+{
+
+}
+
+void dynamixelMotor::setProfileAcceleration(double PROFILE_ACCELERATION)
+{
+
+}
+
+double dynamixelMotor::getProfileVelocity()
+{
+
+}
+
+void dynamixelMotor::setProfileVelocity(double PROFILE_VELOCITY)
+{
+
+}
+
+double dynamixelMotor::getGoalPosition()
+{
+
+}
+
+void dynamixelMotor::setGoalPosition(double GOAL_POSITION)
 {
 
 }
