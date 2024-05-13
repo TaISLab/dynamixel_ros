@@ -56,6 +56,17 @@ CMAKE_BINARY_DIR = /home/maxxx/catkin_ws/src/dynamixel_ros_library/build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+
+.PHONY : edit_cache/fast
+
 # Special rule for the target install/strip
 install/strip: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
@@ -67,17 +78,6 @@ install/strip/fast: preinstall/fast
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
 	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
 .PHONY : install/strip/fast
-
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-
-.PHONY : edit_cache/fast
 
 # Special rule for the target list_install_components
 list_install_components:
@@ -168,6 +168,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named blinkingLED
+
+# Build rule for target.
+blinkingLED: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 blinkingLED
+.PHONY : blinkingLED
+
+# fast build rule for target.
+blinkingLED/fast:
+	$(MAKE) -f CMakeFiles/blinkingLED.dir/build.make CMakeFiles/blinkingLED.dir/build
+.PHONY : blinkingLED/fast
+
+#=============================================================================
 # Target rules for targets named testCommunication
 
 # Build rule for target.
@@ -179,19 +192,6 @@ testCommunication: cmake_check_build_system
 testCommunication/fast:
 	$(MAKE) -f CMakeFiles/testCommunication.dir/build.make CMakeFiles/testCommunication.dir/build
 .PHONY : testCommunication/fast
-
-#=============================================================================
-# Target rules for targets named ledComm
-
-# Build rule for target.
-ledComm: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 ledComm
-.PHONY : ledComm
-
-# fast build rule for target.
-ledComm/fast:
-	$(MAKE) -f CMakeFiles/ledComm.dir/build.make CMakeFiles/ledComm.dir/build
-.PHONY : ledComm/fast
 
 #=============================================================================
 # Target rules for targets named std_srvs_generate_messages_lisp
@@ -843,6 +843,33 @@ gtest/fast:
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/build
 .PHONY : gtest/fast
 
+src/blinkingLED.o: src/blinkingLED.cpp.o
+
+.PHONY : src/blinkingLED.o
+
+# target to build an object file
+src/blinkingLED.cpp.o:
+	$(MAKE) -f CMakeFiles/blinkingLED.dir/build.make CMakeFiles/blinkingLED.dir/src/blinkingLED.cpp.o
+.PHONY : src/blinkingLED.cpp.o
+
+src/blinkingLED.i: src/blinkingLED.cpp.i
+
+.PHONY : src/blinkingLED.i
+
+# target to preprocess a source file
+src/blinkingLED.cpp.i:
+	$(MAKE) -f CMakeFiles/blinkingLED.dir/build.make CMakeFiles/blinkingLED.dir/src/blinkingLED.cpp.i
+.PHONY : src/blinkingLED.cpp.i
+
+src/blinkingLED.s: src/blinkingLED.cpp.s
+
+.PHONY : src/blinkingLED.s
+
+# target to generate assembly for a file
+src/blinkingLED.cpp.s:
+	$(MAKE) -f CMakeFiles/blinkingLED.dir/build.make CMakeFiles/blinkingLED.dir/src/blinkingLED.cpp.s
+.PHONY : src/blinkingLED.cpp.s
+
 src/dynamixel_ros_library.o: src/dynamixel_ros_library.cpp.o
 
 .PHONY : src/dynamixel_ros_library.o
@@ -869,33 +896,6 @@ src/dynamixel_ros_library.s: src/dynamixel_ros_library.cpp.s
 src/dynamixel_ros_library.cpp.s:
 	$(MAKE) -f CMakeFiles/dynamixel_ros_library.dir/build.make CMakeFiles/dynamixel_ros_library.dir/src/dynamixel_ros_library.cpp.s
 .PHONY : src/dynamixel_ros_library.cpp.s
-
-src/ledCommunication.o: src/ledCommunication.cpp.o
-
-.PHONY : src/ledCommunication.o
-
-# target to build an object file
-src/ledCommunication.cpp.o:
-	$(MAKE) -f CMakeFiles/ledComm.dir/build.make CMakeFiles/ledComm.dir/src/ledCommunication.cpp.o
-.PHONY : src/ledCommunication.cpp.o
-
-src/ledCommunication.i: src/ledCommunication.cpp.i
-
-.PHONY : src/ledCommunication.i
-
-# target to preprocess a source file
-src/ledCommunication.cpp.i:
-	$(MAKE) -f CMakeFiles/ledComm.dir/build.make CMakeFiles/ledComm.dir/src/ledCommunication.cpp.i
-.PHONY : src/ledCommunication.cpp.i
-
-src/ledCommunication.s: src/ledCommunication.cpp.s
-
-.PHONY : src/ledCommunication.s
-
-# target to generate assembly for a file
-src/ledCommunication.cpp.s:
-	$(MAKE) -f CMakeFiles/ledComm.dir/build.make CMakeFiles/ledComm.dir/src/ledCommunication.cpp.s
-.PHONY : src/ledCommunication.cpp.s
 
 src/testCommunication.o: src/testCommunication.cpp.o
 
@@ -930,10 +930,10 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... install/strip"
 	@echo "... edit_cache"
+	@echo "... install/strip"
+	@echo "... blinkingLED"
 	@echo "... testCommunication"
-	@echo "... ledComm"
 	@echo "... std_srvs_generate_messages_lisp"
 	@echo "... std_srvs_generate_messages_eus"
 	@echo "... list_install_components"
@@ -989,12 +989,12 @@ help:
 	@echo "... gmock"
 	@echo "... gtest_main"
 	@echo "... gtest"
+	@echo "... src/blinkingLED.o"
+	@echo "... src/blinkingLED.i"
+	@echo "... src/blinkingLED.s"
 	@echo "... src/dynamixel_ros_library.o"
 	@echo "... src/dynamixel_ros_library.i"
 	@echo "... src/dynamixel_ros_library.s"
-	@echo "... src/ledCommunication.o"
-	@echo "... src/ledCommunication.i"
-	@echo "... src/ledCommunication.s"
 	@echo "... src/testCommunication.o"
 	@echo "... src/testCommunication.i"
 	@echo "... src/testCommunication.s"

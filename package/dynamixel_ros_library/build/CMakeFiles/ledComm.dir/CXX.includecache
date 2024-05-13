@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+../include/dynamixel_ros_library.h
+dynamixel_sdk.h
+-
+
 /home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include/dynamixel_sdk/dynamixel_sdk.h
 group_bulk_read.h
 /home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include/dynamixel_sdk/group_bulk_read.h
@@ -77,7 +81,7 @@ stdint.h
 /home/maxxx/catkin_ws/src/dynamixel_ros_library/src/ledCommunication.cpp
 ros/ros.h
 -
-dynamixel_sdk.h
+dynamixel_ros_library.h
 -
 
 /opt/ros/noetic/include/ros/advertise_options.h

@@ -1,104 +1,86 @@
 #include <ros/ros.h>
-#include <dynamixel_sdk.h>
+#include <dynamixel_ros_library.h>
 
-#define PORT_NAME "/dev/ttyUSB0"
-#define PROTOCOL_VERSION 2.0
-#define ADDR_LED 65
-#define BAUDRATE 57600
-#define DXL_ID 1
-
-dynamixel::PortHandler *myPortHandler;
-dynamixel::PacketHandler *myPacketHandler;
-
-void mostrarValor(uint8_t *dato, size_t size)
+void switchLed(dynamixelMotor& motor)
 {
-    std::string valor = "";
-    for (size_t i = 0; i < size; ++i)
-    {
-        valor += std::to_string(dato[i]);
-    }
-
-    std::cout<<valor<<std::endl;
-    
+    motor.setLedState(!motor.getLedState());
 }
 
-bool switchLED()
+int main(int argc, char *argv[])
 {
-    int dxl_comm_result = 0;
-    uint8_t dxl_error = 0;
-    uint8_t *dato = new uint8_t[1];
-    
+    char* port_name;
+    int baud_rate, dmxl_id;
+    float protocol_version;
 
-    myPacketHandler->read1ByteTxRx(myPortHandler, DXL_ID, ADDR_LED, dato, &dxl_error);
-    if(dato[0] == 0)
-    {
-        dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,DXL_ID, ADDR_LED, 1, &dxl_error);
-    } else if(dato[0] == 1)
-    {
-        dxl_comm_result = myPacketHandler->write1ByteTxRx(myPortHandler,DXL_ID, ADDR_LED, 0, &dxl_error);
-    }
+    if (argc != 4)#include <ros/ros.h>
+#include <dynamixel_ros_library.h>
 
-    if (dxl_comm_result != COMM_SUCCESS)    
-    {
-        ROS_ERROR("Failed to turn on the LED for Dynamixel ID %d", DXL_ID);
-        ROS_ERROR("Error code: %d", dxl_error);
-        return false;
+void switchLed(dynamixelMotor& motor)
+{
+    motor.setLedState(!motor.getLedState());
+}
 
+int main(int argc, char *argv[])
+{
+    char* port_name;
+    int baud_rate, dmxl_id;
+    float protocol_version;
+
+    if (argc != 5)
+    {
+        printf("Please set '-port_name', '-protocol_version' '-baud_rate' '-dynamixel_id' arguments for connected Dynamixels\n");
+        return 0;
     } else
     {
-        // Leer el valor del registro del LED
-        dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, DXL_ID, ADDR_LED, dato, &dxl_error);
-        
-        if (dxl_comm_result != COMM_SUCCESS)
-        {
-            ROS_ERROR("Failed to read from the LED for Dynamixel ID %d", DXL_ID);
-            ROS_ERROR("Error code: %d", dxl_error);
-            delete[] dato;
-            return false;
-        }
-
-        mostrarValor(dato, sizeof(dato));  // Pasar el puntero al byte leído
-
-        delete[] dato; // Liberar memoria después de usarla
-        return true;
+        port_name = argv[1];
+        protocol_version = atoi(argv[2]);
+        baud_rate = atoi(argv[3]);
+        dmxl_id = atoi(argv[4]);
     }
+
+    dynamixelMotor J1("J1",dmxl_id);
+    dynamixelMotor::iniComm(port_name,protocol_version,baud_rate);
+    
+    J1.setControlTable();
+
+    // ROS node init
+    ros::init(argc, argv, "LED communication");
+    ros::NodeHandle nh;
+
+    // Callback creation
+    auto callbackFunction = std::bind(switchLed,J1);
+    ros::Timer timer = nh.createTimer(ros::Duration(1.0), callbackFunction);
+
+    ros::spin();
+
+    return 0;
 }
 
-bool openUSB()
-{
-    if (!myPortHandler->openPort()) 
     {
-        ROS_ERROR("Failed to open the port!");
-        return false;
+        printf("Please set '-port_name', '-protocol_version' '-baud_rate' '-dynamixel_id' arguments for connected Dynamixels\n");
+        return 0;
+    } else
+    {
+        port_name = argv[1];
+        protocol_version = atoi(argv[2]);
+        baud_rate = atoi(argv[3]);
+        dmxl_id = atoi(argv[4]);
     }
 
-    if (!myPortHandler->setBaudRate(BAUDRATE))  
-    {
-        ROS_ERROR("Failed to set the baudrate!");
-        return false;
-    }
+    dynamixelMotor J1("J1",dmxl_id);
+    dynamixelMotor::iniComm(port_name,protocol_version,baud_rate);
+    
+    J1.setControlTable();
 
-    return true;
-}
+    // ROS node init
+    ros::init(argc, argv, "LED communication");
+    ros::NodeHandle nh;
 
-int main()
-{
-    myPortHandler = dynamixel::PortHandler::getPortHandler(PORT_NAME);
-    myPacketHandler = dynamixel::PacketHandler::getPacketHandler(PROTOCOL_VERSION);
+    // Callback creation
+    auto callbackFunction = std::bind(switchLed,J1);
+    ros::Timer timer = nh.createTimer(ros::Duration(1.0), callbackFunction);
 
-    if(!openUSB())
-    {
-        std::cout<<"ERROR OPENING THE PORT"<<std::endl;
-    } else 
-    {
-        std::cout<<"SUCCESS OPENING THE PORT"<<std::endl;
-    }
+    ros::spin();
 
-    if(switchLED())
-    {
-        std::cout<<"LED STATE SWITCHED"<<std::endl;
-    } else 
-    {
-        std::cout<<"FAIL SWITCHING THE LED STATE"<<std::endl;
-    }
+    return 0;
 }

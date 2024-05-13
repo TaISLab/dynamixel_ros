@@ -6,5 +6,5 @@ CXX_FLAGS = -g -fPIC   -Wall -Wshadow -Wno-error=dangling-else -DGTEST_HAS_PTHRE
 
 CXX_DEFINES = -DGTEST_CREATE_SHARED_LIBRARY=1 -Dgtest_EXPORTS
 
-CXX_INCLUDES = -I/home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include/dynamixel_sdk -I/usr/src/googletest/googletest/include -I/usr/src/googletest/googletest 
+CXX_INCLUDES = -I/home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include/dynamixel_sdk -I/home/maxxx/catkin_ws/src/dynamixel_ros_library/include/dynamixel_ros_library -I/usr/src/googletest/googletest/include -I/usr/src/googletest/googletest 
 

@@ -19,6 +19,7 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include/dynamixel_sdk"
+  "../include/dynamixel_ros_library"
   "../include"
   "/home/maxxx/catkin_ws/devel/include"
   "/home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include"

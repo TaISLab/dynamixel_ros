@@ -3,6 +3,7 @@ project(dynamixel_ros_library)
 
 # If not, gives a problem with including dynamixel_sdk.h
 include_directories(/home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include/dynamixel_sdk)
+include_directories(/home/maxxx/catkin_ws/src/dynamixel_ros_library/include/dynamixel_ros_library)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -142,8 +143,9 @@ add_library(dynamixel_ros_library
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(ledComm src/ledCommunication.cpp)
+# add_executable(ledComm src/ledCommunication.cpp)
 add_executable(testCommunication src/testCommunication.cpp)
+add_executable(blinkingLED src/blinkingLED.cpp)
 
 
 ## Rename C++ executable without prefix
@@ -157,15 +159,20 @@ add_executable(testCommunication src/testCommunication.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(ledComm
+# target_link_libraries(ledComm
+#   ${catkin_LIBRARIES}
+# )
+
+# target_link_libraries(ledComm
+#   /home/maxxx/catkin_ws/devel/lib/libdynamixel_sdk.so
+# )
+
+target_link_libraries(testCommunication
+  dynamixel_ros_library
   ${catkin_LIBRARIES}
 )
 
-target_link_libraries(ledComm
-  /home/maxxx/catkin_ws/devel/lib/libdynamixel_sdk.so
-)
-
-target_link_libraries(testCommunication
+target_link_libraries(blinkingLED
   dynamixel_ros_library
   ${catkin_LIBRARIES}
 )

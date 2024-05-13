@@ -53,8 +53,8 @@ CMAKE_BINARY_DIR = /home/maxxx/catkin_ws/src/dynamixel_ros_library/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/blinkingLED.dir/all
 all: CMakeFiles/testCommunication.dir/all
-all: CMakeFiles/ledComm.dir/all
 all: CMakeFiles/dynamixel_ros_library.dir/all
 all: gtest/all
 
@@ -66,8 +66,8 @@ preinstall: gtest/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
+clean: CMakeFiles/blinkingLED.dir/clean
 clean: CMakeFiles/testCommunication.dir/clean
-clean: CMakeFiles/ledComm.dir/clean
 clean: CMakeFiles/std_srvs_generate_messages_lisp.dir/clean
 clean: CMakeFiles/std_srvs_generate_messages_eus.dir/clean
 clean: CMakeFiles/trajectory_msgs_generate_messages_py.dir/clean
@@ -176,6 +176,33 @@ gtest/googletest/clean: gtest/googletest/CMakeFiles/gtest.dir/clean
 .PHONY : gtest/googletest/clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/blinkingLED.dir
+
+# All Build rule for target.
+CMakeFiles/blinkingLED.dir/all: CMakeFiles/dynamixel_ros_library.dir/all
+	$(MAKE) -f CMakeFiles/blinkingLED.dir/build.make CMakeFiles/blinkingLED.dir/depend
+	$(MAKE) -f CMakeFiles/blinkingLED.dir/build.make CMakeFiles/blinkingLED.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=1,2 "Built target blinkingLED"
+.PHONY : CMakeFiles/blinkingLED.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/blinkingLED.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles 4
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/blinkingLED.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles 0
+.PHONY : CMakeFiles/blinkingLED.dir/rule
+
+# Convenience name for target.
+blinkingLED: CMakeFiles/blinkingLED.dir/rule
+
+.PHONY : blinkingLED
+
+# clean rule for target.
+CMakeFiles/blinkingLED.dir/clean:
+	$(MAKE) -f CMakeFiles/blinkingLED.dir/build.make CMakeFiles/blinkingLED.dir/clean
+.PHONY : CMakeFiles/blinkingLED.dir/clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/testCommunication.dir
 
 # All Build rule for target.
@@ -201,33 +228,6 @@ testCommunication: CMakeFiles/testCommunication.dir/rule
 CMakeFiles/testCommunication.dir/clean:
 	$(MAKE) -f CMakeFiles/testCommunication.dir/build.make CMakeFiles/testCommunication.dir/clean
 .PHONY : CMakeFiles/testCommunication.dir/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/ledComm.dir
-
-# All Build rule for target.
-CMakeFiles/ledComm.dir/all:
-	$(MAKE) -f CMakeFiles/ledComm.dir/build.make CMakeFiles/ledComm.dir/depend
-	$(MAKE) -f CMakeFiles/ledComm.dir/build.make CMakeFiles/ledComm.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=11,12 "Built target ledComm"
-.PHONY : CMakeFiles/ledComm.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/ledComm.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/ledComm.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles 0
-.PHONY : CMakeFiles/ledComm.dir/rule
-
-# Convenience name for target.
-ledComm: CMakeFiles/ledComm.dir/rule
-
-.PHONY : ledComm
-
-# clean rule for target.
-CMakeFiles/ledComm.dir/clean:
-	$(MAKE) -f CMakeFiles/ledComm.dir/build.make CMakeFiles/ledComm.dir/clean
-.PHONY : CMakeFiles/ledComm.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/std_srvs_generate_messages_lisp.dir
@@ -830,7 +830,7 @@ CMakeFiles/sensor_msgs_generate_messages_lisp.dir/clean:
 CMakeFiles/dynamixel_ros_library.dir/all:
 	$(MAKE) -f CMakeFiles/dynamixel_ros_library.dir/build.make CMakeFiles/dynamixel_ros_library.dir/depend
 	$(MAKE) -f CMakeFiles/dynamixel_ros_library.dir/build.make CMakeFiles/dynamixel_ros_library.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=1,2 "Built target dynamixel_ros_library"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=3,4 "Built target dynamixel_ros_library"
 .PHONY : CMakeFiles/dynamixel_ros_library.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1479,7 +1479,7 @@ gtest/googlemock/CMakeFiles/gmock_main.dir/all: gtest/googlemock/CMakeFiles/gmoc
 gtest/googlemock/CMakeFiles/gmock_main.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock_main.dir/build.make gtest/googlemock/CMakeFiles/gmock_main.dir/depend
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock_main.dir/build.make gtest/googlemock/CMakeFiles/gmock_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=5,6 "Built target gmock_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=7,8 "Built target gmock_main"
 .PHONY : gtest/googlemock/CMakeFiles/gmock_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1506,7 +1506,7 @@ gtest/googlemock/CMakeFiles/gmock_main.dir/clean:
 gtest/googlemock/CMakeFiles/gmock.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock.dir/build.make gtest/googlemock/CMakeFiles/gmock.dir/depend
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock.dir/build.make gtest/googlemock/CMakeFiles/gmock.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=3,4 "Built target gmock"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=5,6 "Built target gmock"
 .PHONY : gtest/googlemock/CMakeFiles/gmock.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1533,7 +1533,7 @@ gtest/googlemock/CMakeFiles/gmock.dir/clean:
 gtest/googletest/CMakeFiles/gtest_main.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest_main.dir/build.make gtest/googletest/CMakeFiles/gtest_main.dir/depend
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest_main.dir/build.make gtest/googletest/CMakeFiles/gtest_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=9,10 "Built target gtest_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=11,12 "Built target gtest_main"
 .PHONY : gtest/googletest/CMakeFiles/gtest_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1560,7 +1560,7 @@ gtest/googletest/CMakeFiles/gtest_main.dir/clean:
 gtest/googletest/CMakeFiles/gtest.dir/all:
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/depend
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=7,8 "Built target gtest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=9,10 "Built target gtest"
 .PHONY : gtest/googletest/CMakeFiles/gtest.dir/all
 
 # Build rule for subdir invocation for target.
