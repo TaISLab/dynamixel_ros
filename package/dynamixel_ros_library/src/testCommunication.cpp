@@ -1,6 +1,6 @@
 #include <dynamixel_ros_library.h>
 
-dynamixelMotor J1("J1",0);
+dynamixelMotor J1("J1",1);
 dynamixelMotor J2("J2",2);
 
 
@@ -100,15 +100,16 @@ int main(int argc, char *argv[])
     */
 
     //PWM TRY
-    J1.setOperatingMode(dynamixelMotor::PWM_CONTROL_MODE);
-    J1.setPWMLimit(50);
-    J1.getPWMLimit();
+    J1.setTorqueState(false);
+    J1.setOperatingMode(dynamixelMotor::POSITION_CONTROL_MODE);
+    J1.getMaxPosLimit();
+    J1.getMinPosLimit();
     J1.setTorqueState(true);
-    J1.getGoalPWM();
-    J1.setGoalPWM(50);
-    J1.getGoalPWM();
+    J1.setGoalPosition(360);
+    
 
 
+    /*
     J2.getPWMLimit();
     J2.setPWMLimit(50);
     J2.getPWMLimit();
@@ -116,6 +117,7 @@ int main(int argc, char *argv[])
     J2.setOperatingMode(dynamixelMotor::PWM_CONTROL_MODE);
     J2.setTorqueState(true);
     J2.setGoalPWM(40);
+    */
 
 
     return 1;

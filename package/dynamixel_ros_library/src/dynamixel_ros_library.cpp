@@ -579,7 +579,7 @@ std::string dynamixelMotor::getOperatingMode()
             break;
 
             case dynamixelMotor::EXTENDED_POSITION_CONTROL_MODE:
-                return "Extenden Position Control";
+                return "Extended Position Control";
             break;
 
             case dynamixelMotor::CURRENT_BASED_POSITION_CONTROL:
@@ -1795,7 +1795,7 @@ void dynamixelMotor::setGoalPWM(int GOAL_PWM)
             ROS_ERROR("DMXL %d: Failed to change the goal PWM. Error code: %d",this->ID, dxl_error);
         } else 
         {
-            ROS_INFO("\033[1;35mDMXL %d\033[0m: Goal PWM is set to: %d (%.1f %%)", this->ID, (int)conversion*GOAL_PWM, GOAL_PWM);
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Goal PWM is set to: %d (%d %%)", this->ID, (int)conversion*GOAL_PWM, GOAL_PWM);
         }
     } else 
     {
@@ -1805,50 +1805,427 @@ void dynamixelMotor::setGoalPWM(int GOAL_PWM)
 
 int dynamixelMotor::getGoalCurrent()
 {
+    uint8_t dxl_error = 0;
+    uint16_t *data = new uint16_t[1];
+    float conversion_to_mA = 2.69;
 
+    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["GOAL_CURRENT"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the goal current. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        float current_mA = static_cast<int>(*data)*conversion_to_mA;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current goal current is: %.1f mA",this->ID, current_mA);
+        return current_mA;
+    }
+
+    delete[] data;
 }
 
 void dynamixelMotor::setGoalCurrent(int GOAL_CURRENT)
 {
+    uint8_t dxl_error = 0;
+    float conversion = 1/2.69;
 
+    if(GOAL_CURRENT <= this->getCurrentLimit())
+    {
+        int dxl_comm_result = myPacketHandler->write2ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["GOAL_CURRENT"], (int)conversion*GOAL_CURRENT, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the goal current. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Goal current is set to: %d mA", this->ID, GOAL_CURRENT);
+        }
+    } else 
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid goal current (Must be lower than current Limit of: %.1f).",this->ID, this->getCurrentLimit());
+    }
 }
 
 double dynamixelMotor::getGoalVelocity()
 {
+    uint8_t dxl_error = 0;
+    uint32_t *data = new uint32_t[1];
+    float conversion_to_revmin = 0.229;
 
+    int dxl_comm_result = myPacketHandler->read4ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["GOAL_VELOCITY"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the goal velocity. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        double velocity = static_cast<double>(*data)*conversion_to_revmin;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current goal velocity is: %.1f rpm",this->ID, velocity);
+        return velocity;
+    }
+
+    delete[] data;
 }
 
 void dynamixelMotor::setGoalVelocity(double GOAL_VELOCITY)
 {
+    uint8_t dxl_error = 0;
+    float conversion = 1/0.229;
 
+    if(GOAL_VELOCITY <= this->getVelLimit())
+    {
+        int dxl_comm_result = myPacketHandler->write4ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["GOAL_VELOCITY"], (double)conversion*GOAL_VELOCITY, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the goal velocity. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Goal velocity is set to: %.1f rpm", this->ID, GOAL_VELOCITY);
+        }
+    } else 
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid goal velocity (Must be lower than velocity limit of: %.1f rpm).",this->ID, this->getVelLimit());
+    }
 }
 
 double dynamixelMotor::getProfileAcceleration()
 {
+    uint8_t dxl_error = 0;
+    uint32_t *data = new uint32_t[1];
 
+    int dxl_comm_result = myPacketHandler->read4ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["PROFILE_ACCELERATION"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the profile acceleration. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current profile acceleration is: %.0f",this->ID, static_cast<double>(*data));
+        return static_cast<double>(*data);
+    }
+
+    delete[] data;   
 }
 
 void dynamixelMotor::setProfileAcceleration(double PROFILE_ACCELERATION)
 {
+    uint8_t dxl_error = 0;
 
+    if(PROFILE_ACCELERATION >= 0 && PROFILE_ACCELERATION <= 32767)
+    {
+        int dxl_comm_result = myPacketHandler->write4ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["PROFILE_ACCELERATION"], PROFILE_ACCELERATION, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the profile acceleration. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Profile acceleration is set to: %.0f rpm", this->ID, PROFILE_ACCELERATION);
+        }
+    } else 
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid profile acceleration (0 - 32.767).",this->ID);
+    }
 }
 
 double dynamixelMotor::getProfileVelocity()
 {
+    uint8_t dxl_error = 0;
+    uint32_t *data = new uint32_t[1];
 
+    int dxl_comm_result = myPacketHandler->read4ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["PROFILE_VELOCITY"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the profile velocity. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current profile velocity is: %.0f",this->ID, static_cast<double>(*data));
+        return static_cast<double>(*data);
+    }
+
+    delete[] data;
 }
 
 void dynamixelMotor::setProfileVelocity(double PROFILE_VELOCITY)
 {
+    uint8_t dxl_error = 0;
 
+    if(PROFILE_VELOCITY >= 0 && PROFILE_VELOCITY <= 32767)
+    {
+        int dxl_comm_result = myPacketHandler->write4ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["PROFILE_VELOCITY"], PROFILE_VELOCITY, &dxl_error);
+
+        if (dxl_comm_result != COMM_SUCCESS)    
+        {
+            ROS_ERROR("DMXL %d: Failed to change the profile velocity. Error code: %d",this->ID, dxl_error);
+        } else 
+        {
+            ROS_INFO("\033[1;35mDMXL %d\033[0m: Profile velocity is set to: %.0f rpm", this->ID, PROFILE_VELOCITY);
+        }
+    } else 
+    {
+        ROS_ERROR("DMXL %d: Please, specify a valid profile velocity (0 - 32.767).",this->ID);
+    }
 }
 
 double dynamixelMotor::getGoalPosition()
 {
+    uint8_t dxl_error = 0;
+    uint32_t *data = new uint32_t[1];
+    float conversion = 0.088;
 
+    int dxl_comm_result = myPacketHandler->read4ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["GOAL_POSITION"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the goal position. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        float degrees = static_cast<double>(*data) * conversion;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current goal position is: %.1f",this->ID, degrees);
+        return degrees;
+    }
+
+    delete[] data;
 }
 
 void dynamixelMotor::setGoalPosition(double GOAL_POSITION)
 {
+    uint8_t dxl_error = 0;
 
+    if(this->getOperatingMode() == "Position Control")
+    {
+        if(GOAL_POSITION >= 0 && GOAL_POSITION <= 360)
+        {
+            int dxl_comm_result = myPacketHandler->write4ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["GOAL_POSITION"], GOAL_POSITION/0.088, &dxl_error);
+
+            if (dxl_comm_result != COMM_SUCCESS)    
+            {
+                ROS_ERROR("DMXL %d: Failed to change the goal position. Error code: %d",this->ID, dxl_error);
+            } else 
+            {
+                ROS_INFO("\033[1;35mDMXL %d\033[0m: Goal position is set to: %.0f degrees", this->ID, GOAL_POSITION);
+            }
+        } else 
+        {
+            ROS_ERROR("DMXL %d: Please, specify a valid goal position (0 - 360).",this->ID);
+        }
+
+    } else if(this->getOperatingMode() == "Extended Position Control")
+    {
+        if(GOAL_POSITION >= -256 && GOAL_POSITION <= 256)
+        {
+            int dxl_comm_result = myPacketHandler->write4ByteTxRx(myPortHandler,this->ID, this->CONTROL_TABLE["GOAL_POSITION"], 4096*GOAL_POSITION, &dxl_error);
+
+            if (dxl_comm_result != COMM_SUCCESS)    
+            {
+                ROS_ERROR("DMXL %d: Failed to change the goal position. Error code: %d",this->ID, dxl_error);
+            } else 
+            {
+                ROS_INFO("\033[1;35mDMXL %d\033[0m: Goal position is set to: %.0f revs", this->ID, GOAL_POSITION);
+            }
+        } else 
+        {
+            ROS_ERROR("DMXL %d: Please, specify a valid goal position (-255 - 255 revs).",this->ID);
+        }
+    }
+
+}
+
+double dynamixelMotor::getRealtimeTick()
+{
+    uint8_t dxl_error = 0;
+    uint16_t *data = new uint16_t[1];
+
+    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["REALTIME_TICK"], data, &dxl_error);
+    
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the realtime tick. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current realtime tick is: %.0f",this->ID, static_cast<double>(*data));
+        return static_cast<double>(*data);
+    }
+
+    delete[] data;
+}
+
+bool dynamixelMotor::isMoving()
+{
+    uint8_t dxl_error = 0;
+    uint8_t *data = new uint8_t[1];
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["MOVING"], data, &dxl_error);
+    
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read if moving. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        bool is_moving = static_cast<int>(*data);
+
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Moving state is: %s",this->ID, is_moving ? "verdadero" : "falso");
+        return is_moving;
+    }
+
+    delete[] data;
+}
+
+int dynamixelMotor::getPresentPWM()
+{
+    uint8_t dxl_error = 0;
+    uint16_t *data = new uint16_t[1];
+    float conversion_to_percent = 0.113;
+
+    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["PRESENT_PWM"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the present PWM. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        float percent_PWM = static_cast<int>(*data)*conversion_to_percent;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current PWM is: %d (%.1f %%)",this->ID, static_cast<int>(*data),percent_PWM);
+        return percent_PWM;
+    }
+
+    delete[] data;   
+}
+
+int dynamixelMotor::getPresentCurrent()
+{
+    uint8_t dxl_error = 0;
+    uint16_t *data = new uint16_t[1];
+    float conversion_to_mA = 2.69;
+
+    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["PRESENT_CURRENT"], data, &dxl_error);
+    
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the present current. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        float current_mA = static_cast<int>(*data) * conversion_to_mA;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Present current is: %.1f mA",this->ID, current_mA);
+        return current_mA;
+    }
+
+    delete[] data;
+}
+
+double dynamixelMotor::getPresentVelocity()
+{
+    uint8_t dxl_error = 0;
+    uint32_t *data = new uint32_t[1];
+    float conversion_to_revmin = 0.229;
+
+    int dxl_comm_result = myPacketHandler->read4ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["PRESENT_VELOCITY"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the present velocity. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        double velocity = static_cast<double>(*data)*conversion_to_revmin;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current velocity is: %.1f rpm",this->ID, velocity);
+        return velocity;
+    }
+
+    delete[] data;
+}
+
+double dynamixelMotor::getPresentPosition()
+{
+    uint8_t dxl_error = 0;
+    uint32_t *data = new uint32_t[1];
+    float conversion = 0.088;
+
+    int dxl_comm_result = myPacketHandler->read4ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["PRESENT_POSITION"], data, &dxl_error);
+    
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the present position. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        float degrees = static_cast<double>(*data) * conversion;
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current position is: %.1f",this->ID, degrees);
+        return degrees;
+    }
+
+    delete[] data;
+}
+
+float dynamixelMotor::getPresentInputV()
+{
+    uint8_t dxl_error = 0;
+    uint16_t *data = new uint16_t[1];
+
+    int dxl_comm_result = myPacketHandler->read2ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["PRESENT_INPUT_VOLTAGE"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the present input voltage. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current input voltage is: %.1f V ",this->ID, static_cast<float>(*data)/10);
+        return static_cast<int>(*data)*0.1;
+    }
+
+    delete[] data;
+}
+
+int dynamixelMotor::getPresentTemperature()
+{
+    uint8_t dxl_error = 0;
+    uint8_t *data = new uint8_t[1];
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["PRESENT_TEMPERATURE"], data, &dxl_error);
+        
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read the present temperature. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Current temperature is: %d C",this->ID, static_cast<int>(*data));
+        return static_cast<int>(*data);
+    }
+
+    delete[] data;
+}
+
+bool dynamixelMotor::getBackupReady()
+{
+    uint8_t dxl_error = 0;
+    uint8_t *data = new uint8_t[1];
+
+    int dxl_comm_result = myPacketHandler->read1ByteTxRx(myPortHandler, this->ID, this->CONTROL_TABLE["BACKUP_READY"], data, &dxl_error);
+    
+    if(dxl_comm_result != COMM_SUCCESS)
+    {
+        ROS_ERROR("DMXL %d: Failed to read backup ready. Error code: %d", this->ID, dxl_error);
+        return -1;
+    } else 
+    {
+        bool backup_ready = static_cast<int>(*data);
+
+        ROS_INFO("\033[1;35mDMXL %d\033[0m: Backup ready is: %s",this->ID, backup_ready ? "verdadero" : "falso");
+        return backup_ready;
+    }
+
+    delete[] data;
 }

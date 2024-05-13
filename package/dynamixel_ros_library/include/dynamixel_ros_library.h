@@ -129,6 +129,24 @@ class dynamixelMotor
         double getGoalPosition();
         void setGoalPosition(double GOAL_POSITION);
 
+        double getRealtimeTick();
+
+        bool isMoving();
+
+        int getPresentPWM();
+
+        int getPresentCurrent();
+
+        double getPresentVelocity();
+
+        double getPresentPosition();
+
+        float getPresentInputV();
+
+        int getPresentTemperature();
+
+        bool getBackupReady();
+
         // Config methods
         void configDriveMode(bool REVERSE_MODE, bool SLAVE_MODE, bool TIME_BASED_PROFILE, bool TORQUE_AUTO_ON);
         void showDriveModeConfig();
