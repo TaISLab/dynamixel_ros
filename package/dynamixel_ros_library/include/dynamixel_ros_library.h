@@ -4,17 +4,6 @@
 // DEPENDENCIES
 #include <dynamixel_sdk.h>
 
-// OPERATING MODES (idk if necessary)
-/*enum class operatingMode{
-    CURRENT_CONTROL = 0,
-    VELOCITY_CONTROL = 1,
-    POSITION_CONTROL = 3,
-    EXTENDED_POSITION_CONTROL = 4,
-    CURRENT_BASED_POSITION_CONTROL = 5,
-    PWM_CONTROL = 16
-};
-*/
-
 // CLASS DEFINITION
 class dynamixelMotor
 {
@@ -31,13 +20,13 @@ class dynamixelMotor
         dynamixelMotor(std::string IDENTIFICATOR, int ID);
         ~dynamixelMotor();
 
-        // Communication start
+        // COMMUNICATION START
         static bool iniComm(char* PORT_NAME, float PROTOCOL_VERSION, int BAUDRATE);
 
-        // Tables initialization and setting
+        // TABLE INI
         void setControlTable();
 
-        // Getters and setters
+        // GETTERS AND SETTERS
         int getID();
         void setID(int NEW_ID);
 
@@ -64,10 +53,10 @@ class dynamixelMotor
         double getMovingThreshold();
         void setMovingThreshold(double RPM);
 
-        int getTempLimit();    // REGISTERS 70 and 63 need to be modified to shutdown when T is too much
+        int getTempLimit();
         void setTempLimit(int TEMPERATURE);
 
-        float getMaxVoltageLimit();   //SAME
+        float getMaxVoltageLimit();
         void setMaxVoltageLimit(float MAX_VOLTAGE);
 
         float getMinVoltageLimit();
@@ -78,7 +67,7 @@ class dynamixelMotor
 
         float getCurrentLimit();
         void setCurrentLimit(float CURRENT_mA);
-        //
+        
         float getVelLimit();
         void setVelLimit(float VEL_LIMIT_RPM);
 
@@ -147,11 +136,11 @@ class dynamixelMotor
 
         bool getBackupReady();
 
-        // Config methods
+        // CONFIG METHODS
         void configDriveMode(bool REVERSE_MODE, bool SLAVE_MODE, bool TIME_BASED_PROFILE, bool TORQUE_AUTO_ON);
         void showDriveModeConfig();
 
-        void configStartup(bool TORQUE_ON, bool RAM_RESTORE); //try with other motor
+        void configStartup(bool TORQUE_ON, bool RAM_RESTORE);
         void showStartupConfig();
 
         void configShutdown(bool INPUT_VOLTAGE_ERROR, bool OVERHEATING_ERROR, bool ENCODER_ERROR, bool ELECTRICAL_SHOCK_ERROR, bool OVERLOAD_ERROR);

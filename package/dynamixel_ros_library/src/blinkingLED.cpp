@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
     // Callback creation
     auto callbackFunction = std::bind(switchLed,J1);
-    ros::Timer timer = nh.createTimer(ros::Duration(1.0), callbackFunction);
+    ros::Timer timer = nh.createTimer(ros::Duration(0.5), callbackFunction);
 
     ros::spin();
 
