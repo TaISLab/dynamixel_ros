@@ -172,6 +172,10 @@ std::map<std::string, int> dynamixelMotor::ADDR_DMXL25 = {
     {"BACKUP_READY", 147}
 };
 
+dynamixelMotor::dynamixelMotor()
+{
+    
+}
 
 dynamixelMotor::dynamixelMotor(std::string IDENTIFICATOR, int ID)
 {
@@ -605,7 +609,7 @@ void dynamixelMotor::setOperatingMode(int MODE)
     uint8_t dxl_error = 0;
     bool modeExists = (MODE == dynamixelMotor::CURRENT_CONTROL_MODE || MODE == dynamixelMotor::VELOCITY_CONTROL_MODE ||
                        MODE == dynamixelMotor::POSITION_CONTROL_MODE || MODE == dynamixelMotor::EXTENDED_POSITION_CONTROL_MODE ||
-                       MODE == dynamixelMotor::EXTENDED_POSITION_CONTROL_MODE || MODE == dynamixelMotor::PWM_CONTROL_MODE);
+                       MODE == dynamixelMotor::CURRENT_BASED_POSITION_CONTROL || MODE == dynamixelMotor::PWM_CONTROL_MODE);
 
     if(modeExists)
     {

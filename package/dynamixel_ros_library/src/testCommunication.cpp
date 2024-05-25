@@ -105,7 +105,13 @@ int main(int argc, char *argv[])
     J1.getMaxPosLimit();
     J1.getMinPosLimit();
     J1.setTorqueState(true);
-    J1.setGoalPosition(360);
+    if(J1.getPresentPosition() < 1)
+    {
+        J1.setGoalPosition(360);
+    } else
+    {
+        J1.setGoalPosition(0);
+    }
     
 
 

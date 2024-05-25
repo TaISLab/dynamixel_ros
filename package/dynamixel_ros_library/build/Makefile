@@ -168,6 +168,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named testPositionControl
+
+# Build rule for target.
+testPositionControl: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 testPositionControl
+.PHONY : testPositionControl
+
+# fast build rule for target.
+testPositionControl/fast:
+	$(MAKE) -f CMakeFiles/testPositionControl.dir/build.make CMakeFiles/testPositionControl.dir/build
+.PHONY : testPositionControl/fast
+
+#=============================================================================
 # Target rules for targets named blinkingLED
 
 # Build rule for target.
@@ -348,6 +361,19 @@ rosgraph_msgs_generate_messages_cpp: cmake_check_build_system
 rosgraph_msgs_generate_messages_cpp/fast:
 	$(MAKE) -f CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build.make CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build
 .PHONY : rosgraph_msgs_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named dmxlParamsMonitor
+
+# Build rule for target.
+dmxlParamsMonitor: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 dmxlParamsMonitor
+.PHONY : dmxlParamsMonitor
+
+# fast build rule for target.
+dmxlParamsMonitor/fast:
+	$(MAKE) -f CMakeFiles/dmxlParamsMonitor.dir/build.make CMakeFiles/dmxlParamsMonitor.dir/build
+.PHONY : dmxlParamsMonitor/fast
 
 #=============================================================================
 # Target rules for targets named roscpp_generate_messages_nodejs
@@ -870,6 +896,33 @@ src/blinkingLED.cpp.s:
 	$(MAKE) -f CMakeFiles/blinkingLED.dir/build.make CMakeFiles/blinkingLED.dir/src/blinkingLED.cpp.s
 .PHONY : src/blinkingLED.cpp.s
 
+src/dmxlParamsMonitor.o: src/dmxlParamsMonitor.cpp.o
+
+.PHONY : src/dmxlParamsMonitor.o
+
+# target to build an object file
+src/dmxlParamsMonitor.cpp.o:
+	$(MAKE) -f CMakeFiles/dmxlParamsMonitor.dir/build.make CMakeFiles/dmxlParamsMonitor.dir/src/dmxlParamsMonitor.cpp.o
+.PHONY : src/dmxlParamsMonitor.cpp.o
+
+src/dmxlParamsMonitor.i: src/dmxlParamsMonitor.cpp.i
+
+.PHONY : src/dmxlParamsMonitor.i
+
+# target to preprocess a source file
+src/dmxlParamsMonitor.cpp.i:
+	$(MAKE) -f CMakeFiles/dmxlParamsMonitor.dir/build.make CMakeFiles/dmxlParamsMonitor.dir/src/dmxlParamsMonitor.cpp.i
+.PHONY : src/dmxlParamsMonitor.cpp.i
+
+src/dmxlParamsMonitor.s: src/dmxlParamsMonitor.cpp.s
+
+.PHONY : src/dmxlParamsMonitor.s
+
+# target to generate assembly for a file
+src/dmxlParamsMonitor.cpp.s:
+	$(MAKE) -f CMakeFiles/dmxlParamsMonitor.dir/build.make CMakeFiles/dmxlParamsMonitor.dir/src/dmxlParamsMonitor.cpp.s
+.PHONY : src/dmxlParamsMonitor.cpp.s
+
 src/dynamixel_ros_library.o: src/dynamixel_ros_library.cpp.o
 
 .PHONY : src/dynamixel_ros_library.o
@@ -924,6 +977,33 @@ src/testCommunication.cpp.s:
 	$(MAKE) -f CMakeFiles/testCommunication.dir/build.make CMakeFiles/testCommunication.dir/src/testCommunication.cpp.s
 .PHONY : src/testCommunication.cpp.s
 
+src/testPositionControl.o: src/testPositionControl.cpp.o
+
+.PHONY : src/testPositionControl.o
+
+# target to build an object file
+src/testPositionControl.cpp.o:
+	$(MAKE) -f CMakeFiles/testPositionControl.dir/build.make CMakeFiles/testPositionControl.dir/src/testPositionControl.cpp.o
+.PHONY : src/testPositionControl.cpp.o
+
+src/testPositionControl.i: src/testPositionControl.cpp.i
+
+.PHONY : src/testPositionControl.i
+
+# target to preprocess a source file
+src/testPositionControl.cpp.i:
+	$(MAKE) -f CMakeFiles/testPositionControl.dir/build.make CMakeFiles/testPositionControl.dir/src/testPositionControl.cpp.i
+.PHONY : src/testPositionControl.cpp.i
+
+src/testPositionControl.s: src/testPositionControl.cpp.s
+
+.PHONY : src/testPositionControl.s
+
+# target to generate assembly for a file
+src/testPositionControl.cpp.s:
+	$(MAKE) -f CMakeFiles/testPositionControl.dir/build.make CMakeFiles/testPositionControl.dir/src/testPositionControl.cpp.s
+.PHONY : src/testPositionControl.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -931,6 +1011,7 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
+	@echo "... testPositionControl"
 	@echo "... install/strip"
 	@echo "... blinkingLED"
 	@echo "... testCommunication"
@@ -950,6 +1031,7 @@ help:
 	@echo "... test"
 	@echo "... std_srvs_generate_messages_py"
 	@echo "... rosgraph_msgs_generate_messages_cpp"
+	@echo "... dmxlParamsMonitor"
 	@echo "... roscpp_generate_messages_nodejs"
 	@echo "... std_msgs_generate_messages_eus"
 	@echo "... geometry_msgs_generate_messages_lisp"
@@ -992,12 +1074,18 @@ help:
 	@echo "... src/blinkingLED.o"
 	@echo "... src/blinkingLED.i"
 	@echo "... src/blinkingLED.s"
+	@echo "... src/dmxlParamsMonitor.o"
+	@echo "... src/dmxlParamsMonitor.i"
+	@echo "... src/dmxlParamsMonitor.s"
 	@echo "... src/dynamixel_ros_library.o"
 	@echo "... src/dynamixel_ros_library.i"
 	@echo "... src/dynamixel_ros_library.s"
 	@echo "... src/testCommunication.o"
 	@echo "... src/testCommunication.i"
 	@echo "... src/testCommunication.s"
+	@echo "... src/testPositionControl.o"
+	@echo "... src/testPositionControl.i"
+	@echo "... src/testPositionControl.s"
 .PHONY : help
 
 

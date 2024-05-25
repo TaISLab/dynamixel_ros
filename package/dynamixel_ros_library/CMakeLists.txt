@@ -146,6 +146,8 @@ add_library(dynamixel_ros_library
 # add_executable(ledComm src/ledCommunication.cpp)
 add_executable(testCommunication src/testCommunication.cpp)
 add_executable(blinkingLED src/blinkingLED.cpp)
+add_executable(testPositionControl src/testPositionControl.cpp)
+add_executable(dmxlParamsMonitor src/dmxlParamsMonitor.cpp)
 
 
 ## Rename C++ executable without prefix
@@ -177,7 +179,15 @@ target_link_libraries(blinkingLED
   ${catkin_LIBRARIES}
 )
 
+target_link_libraries(testPositionControl
+  dynamixel_ros_library
+  ${catkin_LIBRARIES}
+)
 
+target_link_libraries(dmxlParamsMonitor
+  dynamixel_ros_library
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

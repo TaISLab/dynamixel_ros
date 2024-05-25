@@ -17,6 +17,7 @@ class dynamixelMotor
                          PWM_CONTROL_MODE = 16;
 
         // CONSTRUCTOR AND DESTRUCTOR
+        dynamixelMotor();
         dynamixelMotor(std::string IDENTIFICATOR, int ID);
         ~dynamixelMotor();
 
