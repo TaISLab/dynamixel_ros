@@ -1,6 +1,11 @@
 [
 {
   "directory": "/home/maxxx/catkin_ws/src/dynamixel_ros_library/build",
+  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"dynamixel_ros_library\\\" -I/home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include/dynamixel_sdk -I/home/maxxx/catkin_ws/src/dynamixel_ros_library/include/dynamixel_ros_library -I/home/maxxx/catkin_ws/src/dynamixel_ros_library/include -I/home/maxxx/catkin_ws/devel/include -I/home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include -I/home/maxxx/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_controllers/include -I/home/maxxx/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_toolbox/include -I/home/maxxx/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_operators/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include/eigen3  -g   -o CMakeFiles/testPWMControl.dir/src/testPWMControl.cpp.o -c /home/maxxx/catkin_ws/src/dynamixel_ros_library/src/testPWMControl.cpp",
+  "file": "/home/maxxx/catkin_ws/src/dynamixel_ros_library/src/testPWMControl.cpp"
+},
+{
+  "directory": "/home/maxxx/catkin_ws/src/dynamixel_ros_library/build",
   "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"dynamixel_ros_library\\\" -I/home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include/dynamixel_sdk -I/home/maxxx/catkin_ws/src/dynamixel_ros_library/include/dynamixel_ros_library -I/home/maxxx/catkin_ws/src/dynamixel_ros_library/include -I/home/maxxx/catkin_ws/devel/include -I/home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include -I/home/maxxx/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_controllers/include -I/home/maxxx/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_toolbox/include -I/home/maxxx/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_operators/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include/eigen3  -g   -o CMakeFiles/testPositionControl.dir/src/testPositionControl.cpp.o -c /home/maxxx/catkin_ws/src/dynamixel_ros_library/src/testPositionControl.cpp",
   "file": "/home/maxxx/catkin_ws/src/dynamixel_ros_library/src/testPositionControl.cpp"
 },
@@ -23,6 +28,11 @@
   "directory": "/home/maxxx/catkin_ws/src/dynamixel_ros_library/build",
   "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"dynamixel_ros_library\\\" -Ddynamixel_ros_library_EXPORTS -I/home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include/dynamixel_sdk -I/home/maxxx/catkin_ws/src/dynamixel_ros_library/include/dynamixel_ros_library -I/home/maxxx/catkin_ws/src/dynamixel_ros_library/include -I/home/maxxx/catkin_ws/devel/include -I/home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include -I/home/maxxx/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_controllers/include -I/home/maxxx/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_toolbox/include -I/home/maxxx/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_operators/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include/eigen3  -g -fPIC   -o CMakeFiles/dynamixel_ros_library.dir/src/dynamixel_ros_library.cpp.o -c /home/maxxx/catkin_ws/src/dynamixel_ros_library/src/dynamixel_ros_library.cpp",
   "file": "/home/maxxx/catkin_ws/src/dynamixel_ros_library/src/dynamixel_ros_library.cpp"
+},
+{
+  "directory": "/home/maxxx/catkin_ws/src/dynamixel_ros_library/build",
+  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"dynamixel_ros_library\\\" -I/home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include/dynamixel_sdk -I/home/maxxx/catkin_ws/src/dynamixel_ros_library/include/dynamixel_ros_library -I/home/maxxx/catkin_ws/src/dynamixel_ros_library/include -I/home/maxxx/catkin_ws/devel/include -I/home/maxxx/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include -I/home/maxxx/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_controllers/include -I/home/maxxx/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_toolbox/include -I/home/maxxx/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_operators/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include/eigen3  -g   -o CMakeFiles/pinzaTest.dir/src/realTest.cpp.o -c /home/maxxx/catkin_ws/src/dynamixel_ros_library/src/realTest.cpp",
+  "file": "/home/maxxx/catkin_ws/src/dynamixel_ros_library/src/realTest.cpp"
 },
 {
   "directory": "/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/gtest/googlemock",

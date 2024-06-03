@@ -1,4 +1,5 @@
 /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles/edit_cache.dir
+/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles/testPWMControl.dir
 /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles/testPositionControl.dir
 /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles/install/strip.dir
 /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles/blinkingLED.dir
@@ -51,6 +52,7 @@
 /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir
 /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles/std_srvs_generate_messages_cpp.dir
 /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles/std_msgs_generate_messages_cpp.dir
+/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles/pinzaTest.dir
 /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles/std_msgs_generate_messages_py.dir
 /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles/sensor_msgs_generate_messages_cpp.dir
 /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles/std_msgs_generate_messages_nodejs.dir

@@ -147,7 +147,9 @@ add_library(dynamixel_ros_library
 add_executable(testCommunication src/testCommunication.cpp)
 add_executable(blinkingLED src/blinkingLED.cpp)
 add_executable(testPositionControl src/testPositionControl.cpp)
+add_executable(testPWMControl src/testPWMControl.cpp)
 add_executable(dmxlParamsMonitor src/dmxlParamsMonitor.cpp)
+add_executable(pinzaTest src/realTest.cpp)
 
 
 ## Rename C++ executable without prefix
@@ -185,6 +187,16 @@ target_link_libraries(testPositionControl
 )
 
 target_link_libraries(dmxlParamsMonitor
+  dynamixel_ros_library
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(pinzaTest
+  dynamixel_ros_library
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(testPWMControl
   dynamixel_ros_library
   ${catkin_LIBRARIES}
 )

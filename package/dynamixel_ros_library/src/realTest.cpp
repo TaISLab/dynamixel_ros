@@ -1,3 +1,9 @@
+#include <ros/ros.h>
+#include <std_msgs/Float32.h>
+#include <std_msgs/Int32.h>
+#include <dynamixel_ros_library.h>
+#include <iostream>
+
 /**
  * This example is created to demonstrate how to use the library with ROS. 
  * In this case, a ROS node is responsible for publishing data on temperature, velocity, 
@@ -6,27 +12,16 @@
  * When a new value appears on this topic, the program executes the corresponding 
  * callback and then resumes its normal routine.
  * 
- * 1. Launch roscore:
- *      roscore
- * 
- * 2. Launch PlotJuggler (only if you want to visualize some data):
- *      rosrun plotjuggler plotjuggler
- *  
- * 3. Launch dmxlParamsMonitor:
+ * 1. Launch roscore
+ * 2. Launch PlotJuggler (only if you want to visualize some data)
+ * 3. Launch dmxlParamsMonitor
  *      rosrun dynamixel_ros_library dmxlParamsMonitor  YOUR_PORT PROTOCOL_TYPE BAUDRATE DMXL_ID
- * 
- * 4. Publish any position between 0 and 360 degrees in the created topic:
+ * 4. Publish any position between 0 and 360 degrees in the created topic
  *      rostopic pub -1 /pos_user_input std_msgs/Int32 "data: DEGREES"
+
 */
 
-#include <ros/ros.h>
-#include <std_msgs/Float32.h>
-#include <std_msgs/Int32.h>
-#include <dynamixel_ros_library.h>
-#include <iostream>
-
-
-dynamixelMotor myMotor;
+dynamixelMotor myMotor1,myMotor2;
 
 void publishMotorStatus(ros::Publisher& pos_pub, ros::Publisher& vel_pub, ros::Publisher& curr_pub, ros::Publisher& temp_pub)
 {
@@ -37,10 +32,10 @@ void publishMotorStatus(ros::Publisher& pos_pub, ros::Publisher& vel_pub, ros::P
     std_msgs::Float32 temp_msg;
 
     // Getting params from dmxl
-    float position = (float)(myMotor.getPresentPosition());
-    float velocity = (float)(myMotor.getPresentVelocity());
-    float current = (float)(myMotor.getPresentCurrent());
-    float temperature = (float)(myMotor.getPresentTemperature());
+    float position = (float)(myMotor1.getPresentPosition());
+    float velocity = (float)(myMotor1.getPresentVelocity());
+    float current = (float)(myMotor1.getPresentCurrent());
+    float temperature = (float)(myMotor1.getPresentTemperature());
 
     // data assignation
     pos_msg.data = position;
@@ -59,25 +54,30 @@ void publishMotorStatus(ros::Publisher& pos_pub, ros::Publisher& vel_pub, ros::P
 void callBack(const std_msgs::Int32::ConstPtr& msg)
 {
     int userValue = msg->data;
-    if (userValue >= 0 && userValue <= 360)
-    {
-        if(myMotor.getTorqueState())
+    // if (userValue >= 0 && userValue <= 360)
+    // {
+        if(myMotor1.getTorqueState() or myMotor2.getTorqueState())
         {
-            myMotor.setTorqueState(false);
+            myMotor1.setTorqueState(false);
+            myMotor2.setTorqueState(false);
         }
 
-        if(myMotor.getOperatingMode() != "EXTENDED_POSITION_CONTROL_MODE")
+        if(myMotor1.getOperatingMode() != "Extended Position Control" or myMotor2.getOperatingMode() != "Extended Position Control")
         {
-            myMotor.setOperatingMode(dynamixelMotor::EXTENDED_POSITION_CONTROL_MODE);
+            myMotor1.setOperatingMode(dynamixelMotor::EXTENDED_POSITION_CONTROL_MODE);
+            myMotor2.setOperatingMode(dynamixelMotor::EXTENDED_POSITION_CONTROL_MODE);
         }
 
-        myMotor.setTorqueState(true);
-        myMotor.setGoalPosition(userValue);
-    }
-    else
-    {
-        ROS_WARN("Invalid input: %d. Please enter a value between 0 and 360.", userValue);
-    }
+        myMotor1.setTorqueState(true);
+        myMotor1.setGoalPosition(userValue);
+
+        myMotor2.setTorqueState(true);
+        myMotor2.setGoalPosition(userValue);
+    // }
+    // else
+    // {
+        // ROS_WARN("Invalid input: %d. Please enter a value between 0 and 360.", userValue);
+    // }
 }
 
 int main(int argc, char *argv[])
@@ -98,10 +98,12 @@ int main(int argc, char *argv[])
         dmxl_id = atoi(argv[4]);
     }
 
-    myMotor = dynamixelMotor("M1",dmxl_id);
+    myMotor1 = dynamixelMotor("LEFT",1);
+    myMotor2 = dynamixelMotor("RIGHT",2);
     dynamixelMotor::iniComm(port_name,protocol_version,baud_rate);
     
-    myMotor.setControlTable();
+    myMotor1.setControlTable();
+    myMotor2.setControlTable();
 
     // ROS node init
     ros::init(argc, argv, "dmxlParamsMonitor");

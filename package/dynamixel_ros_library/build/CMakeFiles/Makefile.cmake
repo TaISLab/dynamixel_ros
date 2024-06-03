@@ -232,6 +232,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
+  "CMakeFiles/testPWMControl.dir/DependInfo.cmake"
   "CMakeFiles/testPositionControl.dir/DependInfo.cmake"
   "CMakeFiles/blinkingLED.dir/DependInfo.cmake"
   "CMakeFiles/testCommunication.dir/DependInfo.cmake"
@@ -278,6 +279,7 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/DependInfo.cmake"
   "CMakeFiles/std_srvs_generate_messages_cpp.dir/DependInfo.cmake"
   "CMakeFiles/std_msgs_generate_messages_cpp.dir/DependInfo.cmake"
+  "CMakeFiles/pinzaTest.dir/DependInfo.cmake"
   "CMakeFiles/std_msgs_generate_messages_py.dir/DependInfo.cmake"
   "CMakeFiles/sensor_msgs_generate_messages_cpp.dir/DependInfo.cmake"
   "CMakeFiles/std_msgs_generate_messages_nodejs.dir/DependInfo.cmake"

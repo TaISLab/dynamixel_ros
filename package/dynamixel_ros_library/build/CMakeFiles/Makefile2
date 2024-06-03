@@ -53,11 +53,13 @@ CMAKE_BINARY_DIR = /home/maxxx/catkin_ws/src/dynamixel_ros_library/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/testPWMControl.dir/all
 all: CMakeFiles/testPositionControl.dir/all
 all: CMakeFiles/blinkingLED.dir/all
 all: CMakeFiles/testCommunication.dir/all
 all: CMakeFiles/dmxlParamsMonitor.dir/all
 all: CMakeFiles/dynamixel_ros_library.dir/all
+all: CMakeFiles/pinzaTest.dir/all
 all: gtest/all
 
 .PHONY : all
@@ -68,6 +70,7 @@ preinstall: gtest/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
+clean: CMakeFiles/testPWMControl.dir/clean
 clean: CMakeFiles/testPositionControl.dir/clean
 clean: CMakeFiles/blinkingLED.dir/clean
 clean: CMakeFiles/testCommunication.dir/clean
@@ -114,6 +117,7 @@ clean: CMakeFiles/tests.dir/clean
 clean: CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/clean
 clean: CMakeFiles/std_srvs_generate_messages_cpp.dir/clean
 clean: CMakeFiles/std_msgs_generate_messages_cpp.dir/clean
+clean: CMakeFiles/pinzaTest.dir/clean
 clean: CMakeFiles/std_msgs_generate_messages_py.dir/clean
 clean: CMakeFiles/sensor_msgs_generate_messages_cpp.dir/clean
 clean: CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean
@@ -180,13 +184,40 @@ gtest/googletest/clean: gtest/googletest/CMakeFiles/gtest.dir/clean
 .PHONY : gtest/googletest/clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/testPWMControl.dir
+
+# All Build rule for target.
+CMakeFiles/testPWMControl.dir/all: CMakeFiles/dynamixel_ros_library.dir/all
+	$(MAKE) -f CMakeFiles/testPWMControl.dir/build.make CMakeFiles/testPWMControl.dir/depend
+	$(MAKE) -f CMakeFiles/testPWMControl.dir/build.make CMakeFiles/testPWMControl.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=19,20 "Built target testPWMControl"
+.PHONY : CMakeFiles/testPWMControl.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/testPWMControl.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles 4
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/testPWMControl.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles 0
+.PHONY : CMakeFiles/testPWMControl.dir/rule
+
+# Convenience name for target.
+testPWMControl: CMakeFiles/testPWMControl.dir/rule
+
+.PHONY : testPWMControl
+
+# clean rule for target.
+CMakeFiles/testPWMControl.dir/clean:
+	$(MAKE) -f CMakeFiles/testPWMControl.dir/build.make CMakeFiles/testPWMControl.dir/clean
+.PHONY : CMakeFiles/testPWMControl.dir/clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/testPositionControl.dir
 
 # All Build rule for target.
 CMakeFiles/testPositionControl.dir/all: CMakeFiles/dynamixel_ros_library.dir/all
 	$(MAKE) -f CMakeFiles/testPositionControl.dir/build.make CMakeFiles/testPositionControl.dir/depend
 	$(MAKE) -f CMakeFiles/testPositionControl.dir/build.make CMakeFiles/testPositionControl.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=17,18 "Built target testPositionControl"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=21,22 "Built target testPositionControl"
 .PHONY : CMakeFiles/testPositionControl.dir/all
 
 # Build rule for subdir invocation for target.
@@ -240,7 +271,7 @@ CMakeFiles/blinkingLED.dir/clean:
 CMakeFiles/testCommunication.dir/all: CMakeFiles/dynamixel_ros_library.dir/all
 	$(MAKE) -f CMakeFiles/testCommunication.dir/build.make CMakeFiles/testCommunication.dir/depend
 	$(MAKE) -f CMakeFiles/testCommunication.dir/build.make CMakeFiles/testCommunication.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=15,16 "Built target testCommunication"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=17,18 "Built target testCommunication"
 .PHONY : CMakeFiles/testCommunication.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1420,6 +1451,33 @@ std_msgs_generate_messages_cpp: CMakeFiles/std_msgs_generate_messages_cpp.dir/ru
 CMakeFiles/std_msgs_generate_messages_cpp.dir/clean:
 	$(MAKE) -f CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make CMakeFiles/std_msgs_generate_messages_cpp.dir/clean
 .PHONY : CMakeFiles/std_msgs_generate_messages_cpp.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/pinzaTest.dir
+
+# All Build rule for target.
+CMakeFiles/pinzaTest.dir/all: CMakeFiles/dynamixel_ros_library.dir/all
+	$(MAKE) -f CMakeFiles/pinzaTest.dir/build.make CMakeFiles/pinzaTest.dir/depend
+	$(MAKE) -f CMakeFiles/pinzaTest.dir/build.make CMakeFiles/pinzaTest.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles --progress-num=15,16 "Built target pinzaTest"
+.PHONY : CMakeFiles/pinzaTest.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/pinzaTest.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles 4
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/pinzaTest.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/maxxx/catkin_ws/src/dynamixel_ros_library/build/CMakeFiles 0
+.PHONY : CMakeFiles/pinzaTest.dir/rule
+
+# Convenience name for target.
+pinzaTest: CMakeFiles/pinzaTest.dir/rule
+
+.PHONY : pinzaTest
+
+# clean rule for target.
+CMakeFiles/pinzaTest.dir/clean:
+	$(MAKE) -f CMakeFiles/pinzaTest.dir/build.make CMakeFiles/pinzaTest.dir/clean
+.PHONY : CMakeFiles/pinzaTest.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/std_msgs_generate_messages_py.dir

@@ -168,6 +168,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named testPWMControl
+
+# Build rule for target.
+testPWMControl: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 testPWMControl
+.PHONY : testPWMControl
+
+# fast build rule for target.
+testPWMControl/fast:
+	$(MAKE) -f CMakeFiles/testPWMControl.dir/build.make CMakeFiles/testPWMControl.dir/build
+.PHONY : testPWMControl/fast
+
+#=============================================================================
 # Target rules for targets named testPositionControl
 
 # Build rule for target.
@@ -766,6 +779,19 @@ std_msgs_generate_messages_cpp/fast:
 .PHONY : std_msgs_generate_messages_cpp/fast
 
 #=============================================================================
+# Target rules for targets named pinzaTest
+
+# Build rule for target.
+pinzaTest: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 pinzaTest
+.PHONY : pinzaTest
+
+# fast build rule for target.
+pinzaTest/fast:
+	$(MAKE) -f CMakeFiles/pinzaTest.dir/build.make CMakeFiles/pinzaTest.dir/build
+.PHONY : pinzaTest/fast
+
+#=============================================================================
 # Target rules for targets named std_msgs_generate_messages_py
 
 # Build rule for target.
@@ -950,6 +976,33 @@ src/dynamixel_ros_library.cpp.s:
 	$(MAKE) -f CMakeFiles/dynamixel_ros_library.dir/build.make CMakeFiles/dynamixel_ros_library.dir/src/dynamixel_ros_library.cpp.s
 .PHONY : src/dynamixel_ros_library.cpp.s
 
+src/realTest.o: src/realTest.cpp.o
+
+.PHONY : src/realTest.o
+
+# target to build an object file
+src/realTest.cpp.o:
+	$(MAKE) -f CMakeFiles/pinzaTest.dir/build.make CMakeFiles/pinzaTest.dir/src/realTest.cpp.o
+.PHONY : src/realTest.cpp.o
+
+src/realTest.i: src/realTest.cpp.i
+
+.PHONY : src/realTest.i
+
+# target to preprocess a source file
+src/realTest.cpp.i:
+	$(MAKE) -f CMakeFiles/pinzaTest.dir/build.make CMakeFiles/pinzaTest.dir/src/realTest.cpp.i
+.PHONY : src/realTest.cpp.i
+
+src/realTest.s: src/realTest.cpp.s
+
+.PHONY : src/realTest.s
+
+# target to generate assembly for a file
+src/realTest.cpp.s:
+	$(MAKE) -f CMakeFiles/pinzaTest.dir/build.make CMakeFiles/pinzaTest.dir/src/realTest.cpp.s
+.PHONY : src/realTest.cpp.s
+
 src/testCommunication.o: src/testCommunication.cpp.o
 
 .PHONY : src/testCommunication.o
@@ -976,6 +1029,33 @@ src/testCommunication.s: src/testCommunication.cpp.s
 src/testCommunication.cpp.s:
 	$(MAKE) -f CMakeFiles/testCommunication.dir/build.make CMakeFiles/testCommunication.dir/src/testCommunication.cpp.s
 .PHONY : src/testCommunication.cpp.s
+
+src/testPWMControl.o: src/testPWMControl.cpp.o
+
+.PHONY : src/testPWMControl.o
+
+# target to build an object file
+src/testPWMControl.cpp.o:
+	$(MAKE) -f CMakeFiles/testPWMControl.dir/build.make CMakeFiles/testPWMControl.dir/src/testPWMControl.cpp.o
+.PHONY : src/testPWMControl.cpp.o
+
+src/testPWMControl.i: src/testPWMControl.cpp.i
+
+.PHONY : src/testPWMControl.i
+
+# target to preprocess a source file
+src/testPWMControl.cpp.i:
+	$(MAKE) -f CMakeFiles/testPWMControl.dir/build.make CMakeFiles/testPWMControl.dir/src/testPWMControl.cpp.i
+.PHONY : src/testPWMControl.cpp.i
+
+src/testPWMControl.s: src/testPWMControl.cpp.s
+
+.PHONY : src/testPWMControl.s
+
+# target to generate assembly for a file
+src/testPWMControl.cpp.s:
+	$(MAKE) -f CMakeFiles/testPWMControl.dir/build.make CMakeFiles/testPWMControl.dir/src/testPWMControl.cpp.s
+.PHONY : src/testPWMControl.cpp.s
 
 src/testPositionControl.o: src/testPositionControl.cpp.o
 
@@ -1011,6 +1091,7 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
+	@echo "... testPWMControl"
 	@echo "... testPositionControl"
 	@echo "... install/strip"
 	@echo "... blinkingLED"
@@ -1063,6 +1144,7 @@ help:
 	@echo "... rosgraph_msgs_generate_messages_nodejs"
 	@echo "... std_srvs_generate_messages_cpp"
 	@echo "... std_msgs_generate_messages_cpp"
+	@echo "... pinzaTest"
 	@echo "... std_msgs_generate_messages_py"
 	@echo "... sensor_msgs_generate_messages_cpp"
 	@echo "... std_msgs_generate_messages_nodejs"
@@ -1080,9 +1162,15 @@ help:
 	@echo "... src/dynamixel_ros_library.o"
 	@echo "... src/dynamixel_ros_library.i"
 	@echo "... src/dynamixel_ros_library.s"
+	@echo "... src/realTest.o"
+	@echo "... src/realTest.i"
+	@echo "... src/realTest.s"
 	@echo "... src/testCommunication.o"
 	@echo "... src/testCommunication.i"
 	@echo "... src/testCommunication.s"
+	@echo "... src/testPWMControl.o"
+	@echo "... src/testPWMControl.i"
+	@echo "... src/testPWMControl.s"
 	@echo "... src/testPositionControl.o"
 	@echo "... src/testPositionControl.i"
 	@echo "... src/testPositionControl.s"

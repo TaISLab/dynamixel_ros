@@ -1,3 +1,15 @@
+/**
+ * This example is created to demonstrate how to use the library with ROS. 
+ * In this case, a ROS node is responsible for switching the integrated LED state every 0.5s,
+ * so the user can launch this example to identificate every motors ID without scanning entire system.
+ * 
+ * 1. Launch roscore:
+ *      roscore
+ * 
+ * 2. Launch the example:
+ *      rosrun dynamixel_ros_library blinkingLED  YOUR_PORT PROTOCOL_TYPE BAUDRATE DMXL_ID
+*/
+
 #include <ros/ros.h>
 #include <dynamixel_ros_library.h>
 
