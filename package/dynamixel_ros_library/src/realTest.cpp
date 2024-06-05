@@ -4,126 +4,100 @@
 #include <dynamixel_ros_library.h>
 #include <iostream>
 
-/**
- * This example is created to demonstrate how to use the library with ROS. 
- * In this case, a ROS node is responsible for publishing data on temperature, velocity, 
- * current, and position every 0.1 seconds. Additionally, it listens to a ROS topic named 
- * "pos_user_input," where the user must input the desired motor position. 
- * When a new value appears on this topic, the program executes the corresponding 
- * callback and then resumes its normal routine.
- * 
- * 1. Launch roscore
- * 2. Launch PlotJuggler (only if you want to visualize some data)
- * 3. Launch dmxlParamsMonitor
- *      rosrun dynamixel_ros_library dmxlParamsMonitor  YOUR_PORT PROTOCOL_TYPE BAUDRATE DMXL_ID
- * 4. Publish any position between 0 and 360 degrees in the created topic
- *      rostopic pub -1 /pos_user_input std_msgs/Int32 "data: DEGREES"
-
-*/
-
-dynamixelMotor myMotor1,myMotor2;
-
-void publishMotorStatus(ros::Publisher& pos_pub, ros::Publisher& vel_pub, ros::Publisher& curr_pub, ros::Publisher& temp_pub)
-{
-    // Creating MSG objects
-    std_msgs::Float32 pos_msg;
-    std_msgs::Float32 vel_msg;
-    std_msgs::Float32 curr_msg;
-    std_msgs::Float32 temp_msg;
-
-    // Getting params from dmxl
-    float position = (float)(myMotor1.getPresentPosition());
-    float velocity = (float)(myMotor1.getPresentVelocity());
-    float current = (float)(myMotor1.getPresentCurrent());
-    float temperature = (float)(myMotor1.getPresentTemperature());
-
-    // data assignation
-    pos_msg.data = position;
-    vel_msg.data = velocity;
-    curr_msg.data = current;
-    temp_msg.data = temperature;
-
-    // Publishing
-    pos_pub.publish(pos_msg);
-    vel_pub.publish(vel_msg);
-    curr_pub.publish(curr_msg);
-    temp_pub.publish(temp_msg);
-}
+dynamixelMotor motorJ0,motorJ1,motorJ2,motorJ10,motorJ11,motorJ12;
 
 // Callback when some data was published in 'pos_user_input'
 void callBack(const std_msgs::Int32::ConstPtr& msg)
 {
     int userValue = msg->data;
-    // if (userValue >= 0 && userValue <= 360)
-    // {
-        if(myMotor1.getTorqueState() or myMotor2.getTorqueState())
-        {
-            myMotor1.setTorqueState(false);
-            myMotor2.setTorqueState(false);
-        }
+    
+    motorJ0.setTorqueState(true);
+    motorJ10.setTorqueState(true);
+    motorJ1.setTorqueState(true);
+    motorJ11.setTorqueState(true);
+    motorJ2.setTorqueState(true);
+    motorJ12.setTorqueState(true);
 
-        if(myMotor1.getOperatingMode() != "Extended Position Control" or myMotor2.getOperatingMode() != "Extended Position Control")
-        {
-            myMotor1.setOperatingMode(dynamixelMotor::EXTENDED_POSITION_CONTROL_MODE);
-            myMotor2.setOperatingMode(dynamixelMotor::EXTENDED_POSITION_CONTROL_MODE);
-        }
+    switch (userValue)
+    {
+        case 0:
+            motorJ0.setGoalPosition(60);
+            motorJ10.setGoalPosition(345);
+            motorJ1.setGoalPosition(12);
+            motorJ11.setGoalPosition(358);
+            motorJ2.setGoalPosition(120);
+            motorJ12.setGoalPosition(240);
+        break;
 
-        myMotor1.setTorqueState(true);
-        myMotor1.setGoalPosition(userValue);
+        case 1:
+            motorJ0.setGoalPosition(180);
+            motorJ10.setGoalPosition(240);
+            motorJ1.setGoalPosition(120);
+            motorJ11.setGoalPosition(280);
+            motorJ2.setGoalPosition(240);
+            motorJ12.setGoalPosition(120);
+        break;
 
-        myMotor2.setTorqueState(true);
-        myMotor2.setGoalPosition(userValue);
-    // }
-    // else
-    // {
-        // ROS_WARN("Invalid input: %d. Please enter a value between 0 and 360.", userValue);
-    // }
+        case 2:
+            motorJ0.setGoalPosition(180);
+            motorJ10.setGoalPosition(180);
+            motorJ1.setGoalPosition(120);
+            motorJ11.setGoalPosition(315);
+            motorJ2.setGoalPosition(240);
+            motorJ12.setGoalPosition(200);
+        break;
+    
+        default:
+
+        break;
+    }
 }
 
 int main(int argc, char *argv[])
 {
     char* port_name;
-    int baud_rate, dmxl_id;
+    int baud_rate;
     float protocol_version;
 
-    if (argc != 5)
+    if (argc != 4)
     {
-        printf("Please set '-port_name', '-protocol_version' '-baud_rate' '-dynamixel_id' arguments for connected Dynamixels\n");
+        printf("Please set '-port_name', '-protocol_version' '-baud_rate' arguments for connected Dynamixels\n");
         return 0;
     } else
     {
         port_name = argv[1];
         protocol_version = atoi(argv[2]);
         baud_rate = atoi(argv[3]);
-        dmxl_id = atoi(argv[4]);
     }
 
-    myMotor1 = dynamixelMotor("LEFT",1);
-    myMotor2 = dynamixelMotor("RIGHT",2);
     dynamixelMotor::iniComm(port_name,protocol_version,baud_rate);
+    motorJ0 = dynamixelMotor("J0",0);
+    motorJ10 = dynamixelMotor("J10",10);
+    motorJ1 = dynamixelMotor("J1",1);
+    motorJ11 = dynamixelMotor("J11",11);
+    motorJ2 = dynamixelMotor("J2",2);
+    motorJ12 = dynamixelMotor("J12",12);
+
+    motorJ0.setControlTable();
+    motorJ10.setControlTable();
+    motorJ1.setControlTable();
+    motorJ11.setControlTable();
+    motorJ2.setControlTable();
+    motorJ12.setControlTable();
     
-    myMotor1.setControlTable();
-    myMotor2.setControlTable();
 
     // ROS node init
-    ros::init(argc, argv, "dmxlParamsMonitor");
+    ros::init(argc, argv, "testFingers");
     ros::NodeHandle nh;
-
-    // Publishers and Subscribers creation
-    ros::Publisher pos_publisher = nh.advertise<std_msgs::Float32>("motor_position",10);
-    ros::Publisher vel_publisher = nh.advertise<std_msgs::Float32>("motor_velocity",10);
-    ros::Publisher curr_publisher = nh.advertise<std_msgs::Float32>("motor_current",10);
-    ros::Publisher temp_publisher = nh.advertise<std_msgs::Float32>("motor_temperature",10);
 
     ros::Subscriber user_input_subscriber = nh.subscribe("pos_user_input",10,callBack);
 
     // ROS freq = 10 Hz
     ros::Rate loop_rate(10);
 
-
     while(ros::ok())
     {
-        publishMotorStatus(pos_publisher, vel_publisher, curr_publisher, temp_publisher);
+        // publishMotorStatus(pos_publisher, vel_publisher, curr_publisher, temp_publisher);
 
         ros::spinOnce();
         loop_rate.sleep();
