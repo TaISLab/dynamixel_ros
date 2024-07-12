@@ -122,7 +122,7 @@ By leveraging these features, users can efficiently control and manage their Dyn
 
 ## Acknowledgements
 
-Special thanks to the developers of the Dynamixel SDK and the ROS community for their invaluable tools and support. This project would not have been possible without their contributions.
+Special thanks to the developers of the Dynamixel SDK and the ROS community for their unvaluable tools and support. This project would not have been possible without their contributions.
 
 ## Contact
 
