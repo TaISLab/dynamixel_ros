@@ -20,7 +20,7 @@ To install this library, follow these steps:
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/dynamixel_ros_library.git
+    git clone https://github.com/TaISLab/dynamixel_ros_library.git
     cd dynamixel_ros_library
     ```
 
