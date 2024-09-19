@@ -108,9 +108,16 @@ target_link_libraries(pinzaTest
 )
 
 # 
-add_executable(rolling_ball src/rolling_fingers_gripper.cpp)
+add_executable(rolling_ball src/rolling_ball.cpp)
 add_dependencies(rolling_ball ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(rolling_ball
+  dynamixel_ros_library
+  ${catkin_LIBRARIES}
+)
+
+add_executable(fsm_3_fingers src/fsm_3_fingers.cpp)
+add_dependencies(fsm_3_fingers ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(fsm_3_fingers
   dynamixel_ros_library
   ${catkin_LIBRARIES}
 )
