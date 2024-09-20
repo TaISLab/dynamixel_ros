@@ -20,11 +20,11 @@ int main(int argc, char *argv[])
     int prev_state = 0;
 
     // ROS node init
-    ros::init(argc, argv, "fsm_3_fingers_node");
+    ros::init(argc, argv, "fsm_4_fingers_node");
     ros::NodeHandle nh;
 
     // Publishers and subscribers creation
-    ros::Publisher fsm_state_publisher = nh.advertise<std_msgs::Int16>("fsm_state_3fingers", 1);
+    ros::Publisher fsm_state_publisher = nh.advertise<std_msgs::Int16>("fsm_state_4fingers", 1);
 
     // ROS freq = 1000 Hz
     ros::Rate loop_rate(1000);
