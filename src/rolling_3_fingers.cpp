@@ -6,6 +6,9 @@
 
 dynamixelMotor motorJ0, motorJ1, motorJ2, motorJ10, motorJ11, motorJ12;
 int fsm_state = 0;
+double rotation_time;
+double rotation_duration = 4;
+double time_now;
 
 void publishMotorStatus(dynamixelMotor &motor, ros::Publisher &pos_pub, ros::Publisher &vel_pub, ros::Publisher &curr_pub)
 {
@@ -34,6 +37,10 @@ void publishMotorStatus(dynamixelMotor &motor, ros::Publisher &pos_pub, ros::Pub
 void fsmStateCallBack(const std_msgs::Int16::ConstPtr &msg)
 {
     fsm_state = msg->data;
+    if (fsm_state == 5)
+    {
+        rotation_time = ros::Time::now().toSec();
+    }
 }
 
 void torqueEnabled()
@@ -63,20 +70,6 @@ int main(int argc, char *argv[])
     char *port_name = "/dev/ttyUSB0";
     int baud_rate = 4500000;
     float protocol_version = 2.0;
-    // char* port_name;
-    // int baud_rate;
-    // float protocol_version;
-
-    // if (argc != 4)
-    // {
-    //     printf("Please set '-port_name', '-protocol_version' '-baud_rate' arguments for connected Dynamixels\n");
-    //     return 0;
-    // } else
-    // {
-    //     port_name = argv[1];
-    //     protocol_version = atoi(argv[2]);
-    //     baud_rate = atoi(argv[3]);
-    // }
 
     // Init communication
     dynamixelMotor::iniComm(port_name, protocol_version, baud_rate);
@@ -109,24 +102,21 @@ int main(int argc, char *argv[])
     motorJ11.setVelLimit(MAX_VELOCITY);
     motorJ12.setVelLimit(MAX_VELOCITY);
 
-    // Set joint position limits (change the numbers for your gripper)
-    motorJ0.setMaxPosLimit(242.0);
-    motorJ1.setMaxPosLimit(221.0);
-    motorJ2.setMaxPosLimit(342.0);
-    motorJ0.setMinPosLimit(2);
-    motorJ1.setMinPosLimit(1);
-    motorJ2.setMinPosLimit(105.0);
+    // Set joint position PWM limits (change the numbers for your gripper)
+    motorJ0.setPWMLimit(15);
+    motorJ1.setPWMLimit(20);
+    motorJ2.setPWMLimit(15);
 
     // Enable Torque
     torqueEnabled();
 
     // Open and closed joint values
-    float motor0_open = 242.0;
-    float motor1_open = 1;
-    float motor2_open = 342;
-    float motor0_closed = 2;
-    float motor1_closed = 221;
-    float motor2_closed = 105;
+    float motor0_open = 240;
+    float motor1_open = 43;
+    float motor2_open = 327;
+    float motor0_closed = 41;
+    float motor1_closed = 216;
+    float motor2_closed = 150;
 
     // Velocity values
     float slow_velocity = 20;
@@ -142,7 +132,7 @@ int main(int argc, char *argv[])
     motorJ12.setGoalVelocity(0);
 
     // ROS node init
-    ros::init(argc, argv, "Ball_rolling");
+    ros::init(argc, argv, "rolling_3_fingers");
     ros::NodeHandle nh;
 
     // Publishers and subscribers creation
@@ -165,95 +155,99 @@ int main(int argc, char *argv[])
     ros::Publisher J12_vel_publisher = nh.advertise<std_msgs::Float32>("J12_velocity", 10);
     ros::Publisher J12_curr_publisher = nh.advertise<std_msgs::Float32>("J12_current", 10);
 
-    ros::Subscriber fsm_state_subscriber = nh.subscribe("fsm_state_3fingers", 10, fsmStateCallBack);
+    ros::Subscriber fsm_state_subscriber = nh.subscribe("fsm_state_3fingers", 1, fsmStateCallBack);
 
     // ROS freq = 100 Hz
-    ros::Rate loop_rate(100);
+    ros::Rate loop_rate(300);
 
     while (ros::ok())
     {
-        // // Wait for user to hit a key
-        // printf("Select the next state: %d\n", state);
-        // printf("0: Gripper open, not rotating\n");
-        // printf("1: Gripper closed, not rotating\n");
-        // printf("2: Gripper closed, rotating\n");
-        // std::cin >> state;
-        // if (state != 0 || state != 1 || state != 2)
-        // {
-        //     printf("Wrong state selection\n");
-        // }
-        // else
-        // {
-        //     printf("Going to state: %c\n", state);
-        // }
 
         switch (fsm_state)
         {
         case 0:
-                // State 0: gripper open, not rotating
-                motorJ0.setGoalPosition(motor0_open);
-                motorJ1.setGoalPosition(motor1_open);
-                motorJ2.setGoalPosition(motor2_open);
-                motorJ10.setGoalVelocity(0);
-                motorJ11.setGoalVelocity(0);
-                motorJ12.setGoalVelocity(0);
-                ros::Duration(0.8).sleep(); // sleep for half a second (wait for opening)
-                torqueDisabled();
+            // State 0: Gripper open
+            motorJ0.setGoalPosition(motor0_open);
+            motorJ1.setGoalPosition(motor1_open);
+            motorJ2.setGoalPosition(motor2_open);
             break;
         case 1:
-                torqueEnabled();
-                // State 0: gripper open, not rotating
-                motorJ0.setGoalPosition(motor0_open);
-                motorJ1.setGoalPosition(motor1_open);
-                motorJ2.setGoalPosition(motor2_open);
-                motorJ10.setGoalVelocity(0);
-                motorJ11.setGoalVelocity(0);
-                motorJ12.setGoalVelocity(0);
-            break;
-        case 2:
-                torqueEnabled();
-                // State 1: gripper closed, notrotating
-                motorJ0.setGoalPosition(motor0_closed);
-                motorJ1.setGoalPosition(motor1_closed);
-                motorJ2.setGoalPosition(motor2_closed);
-                motorJ10.setGoalVelocity(0);
-                motorJ11.setGoalVelocity(0);
-                motorJ12.setGoalVelocity(0);
-            break;
-        case 3:
-            torqueEnabled();
-            // State 2: gripper closed, rotating
-            // State 1: gripper closed, notrotating
+            // State 1: gripper closed
             motorJ0.setGoalPosition(motor0_closed);
             motorJ1.setGoalPosition(motor1_closed);
             motorJ2.setGoalPosition(motor2_closed);
-            ros::Duration(0.8).sleep(); // sleep for half a second (wait for closing)
-            // Start rotation
-            ros::Time rotation_begin = ros::Time::now();
-            ros::Duration rotation_rate_half(0.5);
-            ros::Duration rotation_rate_full(1.0);
-
-            ros::Time rotation_time = ros::Time::now();
-            std::cout << rotation_time << std::endl;
-            if (rotation_time - rotation_begin < rotation_rate_half)
+            break;
+        case 2:
+            // State 2: Rotate left
+            motorJ10.setGoalVelocity(slow_velocity);
+            motorJ11.setGoalVelocity(-slow_velocity);
+            motorJ12.setGoalVelocity(slow_velocity);
+            break;
+        case 3:
+            // State 3: Rotate right
+            motorJ10.setGoalVelocity(-slow_velocity);
+            motorJ11.setGoalVelocity(slow_velocity);
+            motorJ12.setGoalVelocity(-slow_velocity);
+            break;
+        case 4:
+            // State 4: Not rotate
+            motorJ10.setGoalVelocity(0);
+            motorJ11.setGoalVelocity(0);
+            motorJ12.setGoalVelocity(0);
+            break;
+        case 5:
+            // State 5: Rotate left and right
+            time_now = ros::Time::now().toSec();
+            if (time_now - rotation_time < rotation_duration / 2)
             {
-                std::cout << "one direction" << std::endl;
-                motorJ10.setGoalVelocity(-slow_velocity);
+                motorJ10.setGoalVelocity(slow_velocity);
                 motorJ11.setGoalVelocity(-slow_velocity);
+                motorJ12.setGoalVelocity(slow_velocity);
+            }
+            else if (time_now - rotation_time > rotation_duration / 2 && time_now - rotation_time < rotation_duration)
+            {
+                motorJ10.setGoalVelocity(-slow_velocity);
+                motorJ11.setGoalVelocity(slow_velocity);
                 motorJ12.setGoalVelocity(-slow_velocity);
             }
-            else if (rotation_time - rotation_begin > rotation_rate_half && rotation_time - rotation_begin < rotation_rate_full)
+            else
             {
-                std::cout << "the other direction" << std::endl;
+                motorJ10.setGoalVelocity(0);
+                motorJ11.setGoalVelocity(0);
+                motorJ12.setGoalVelocity(0);
+                rotation_time = ros::Time::now().toSec();
+            }
+            break;
+        case 6:
+            // State 6: Ball rotation
+            time_now = ros::Time::now().toSec();
+            if (time_now - rotation_time < rotation_duration / 2)
+            {
                 motorJ10.setGoalVelocity(slow_velocity);
                 motorJ11.setGoalVelocity(slow_velocity);
                 motorJ12.setGoalVelocity(slow_velocity);
             }
+            else if (time_now - rotation_time > rotation_duration / 2 && time_now - rotation_time < rotation_duration)
+            {
+                motorJ10.setGoalVelocity(-slow_velocity);
+                motorJ11.setGoalVelocity(-slow_velocity);
+                motorJ12.setGoalVelocity(-slow_velocity);
+            }
             else
             {
-                ros::Time rotation_begin = ros::Time::now();
+                motorJ10.setGoalVelocity(0);
+                motorJ11.setGoalVelocity(0);
+                motorJ12.setGoalVelocity(0);
+                rotation_time = ros::Time::now().toSec();
             }
+            break;
+        }
+        ROS_INFO("FSM state is: %d", fsm_state);
 
+        if (fsm_state == 7)
+        {
+            ROS_INFO("Switching off and exiting...");
+            torqueDisabled();
             break;
         }
 

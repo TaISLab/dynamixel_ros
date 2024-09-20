@@ -108,9 +108,9 @@ target_link_libraries(pinzaTest
 )
 
 # 
-add_executable(rolling_ball src/rolling_ball.cpp)
-add_dependencies(rolling_ball ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(rolling_ball
+add_executable(rolling_3_fingers src/rolling_3_fingers.cpp)
+add_dependencies(rolling_3_fingers ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(rolling_3_fingers
   dynamixel_ros_library
   ${catkin_LIBRARIES}
 )

@@ -25,21 +25,25 @@ int main(int argc, char *argv[])
     ros::NodeHandle nh;
 
     // Publishers and subscribers creation
-    ros::Publisher fsm_state_publisher = nh.advertise<std_msgs::Int16>("fsm_state_3fingers", 10);
+    ros::Publisher fsm_state_publisher = nh.advertise<std_msgs::Int16>("fsm_state_3fingers", 1);
 
-    // ROS freq = 100 Hz
-    ros::Rate loop_rate(100);
+    // ROS freq = 1000 Hz
+    ros::Rate loop_rate(1000);
 
     while (ros::ok())
     {
         // Wait for user to hit a key
         printf("Select the next state:\n");
-        printf("0: Gripper open, no torque\n");
-        printf("1: Gripper open, torque enabled\n");
-        printf("2: Gripper closed, not rotating\n");
-        printf("3: Gripper closed, rotating\n");
+        printf("0: Open gripper\n");
+        printf("1: Close gripper\n");
+        printf("2: Rotate Left\n");
+        printf("3: Rotate right\n");
+        printf("4: No Rotation\n");
+        printf("5: Rotate left and right\n");
+        printf("6: Ball rotation\n");
+        printf("7: Exit\n");
         std::cin >> state;
-        if (state != 0 && state != 1 && state != 2 && state != 3)
+        if (state != 0 && state != 1 && state != 2 && state != 3 && state != 4 && state != 5 && state != 6 && state != 7)
         {
             printf("Wrong state selection\n");
         }
@@ -49,6 +53,11 @@ int main(int argc, char *argv[])
             if (state != prev_state)
             {
                 publishFSMState(state, fsm_state_publisher);
+                if (state == 7)
+                {
+                    ros::Duration(0.5).sleep(); // wait for exiting
+                    break;
+                }
             }
 
             prev_state = state;
