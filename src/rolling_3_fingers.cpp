@@ -7,7 +7,7 @@
 dynamixelMotor motorJ0, motorJ1, motorJ2, motorJ10, motorJ11, motorJ12;
 int fsm_state = 0;
 double rotation_time;
-double rotation_duration = 4;
+double rotation_duration = 6;
 double time_now;
 
 void publishMotorStatus(dynamixelMotor &motor, ros::Publisher &pos_pub, ros::Publisher &vel_pub, ros::Publisher &curr_pub)
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
     motorJ12.setOperatingMode(dynamixelMotor::VELOCITY_CONTROL_MODE);
 
     // Set joint velocity limit
-    float MAX_VELOCITY = 45.0;
+    float MAX_VELOCITY = 44.0;
     motorJ10.setVelLimit(MAX_VELOCITY);
     motorJ11.setVelLimit(MAX_VELOCITY);
     motorJ12.setVelLimit(MAX_VELOCITY);

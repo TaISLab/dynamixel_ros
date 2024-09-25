@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 {
     // Define port, rate and protocol
     // Default values
-    char *port_name = "/dev/ttyUSB0";
+    char *port_name = "/dev/ttyUSB1";
     int baud_rate = 1000000;
     float protocol_version = 2.0;
 
@@ -123,14 +123,14 @@ int main(int argc, char *argv[])
     torqueEnabled();
 
     // Open and closed joint values
-    float motor0_open = 100;
-    float motor1_open = 190;
+    float motor0_open = 110;
+    float motor1_open = 210;
     float motor2_open = 180;
     float motor3_open = 320;
-    float motor0_closed = 185;
-    float motor1_closed = 75;
-    float motor2_closed = 325;
-    float motor3_closed = 165;
+    float motor0_closed = 180;
+    float motor1_closed = 95;
+    float motor2_closed = 300;
+    float motor3_closed = 190;
 
     // Velocity values
     float slow_velocity = 20;
