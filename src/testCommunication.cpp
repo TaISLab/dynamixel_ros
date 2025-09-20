@@ -1,4 +1,4 @@
-#include <dynamixel_ros_library.h>
+#include <dynamixel_ros.h>
 
 dynamixelMotor J1("J1",1);
 dynamixelMotor J2("J2",2);

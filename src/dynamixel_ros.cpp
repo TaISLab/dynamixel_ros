@@ -1,5 +1,5 @@
 #include <ros/ros.h>
-#include <dynamixel_ros_library.h>
+#include <dynamixel_ros.h>
 
 
 dynamixel::PortHandler *myPortHandler = nullptr;
