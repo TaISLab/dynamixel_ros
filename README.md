@@ -20,8 +20,8 @@ To install this library, follow these steps:
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/TaISLab/dynamixel_ros_library.git
-    cd dynamixel_ros_library
+    git clone https://github.com/TaISLab/dynamixel_ros.git
+    cd dynamixel_ros
     ```
 
 2. Install dependencies:
@@ -57,7 +57,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES dynamixel_ros_library
+  LIBRARIES dynamixel_ros
   CATKIN_DEPENDS roscpp dynamixel_sdk
 )
 
@@ -74,11 +74,11 @@ include_directories(
 <depend>dynamixel_sdk</depend>
 ```
 
-After these changes, you can use the functionalities implemented in dynamixel_ros_library in your projects. Be sure to consult the examples located in the src folder, as they include the correct order of function calls for initializing control tables, creating object instances, and more.
+After these changes, you can use the functionalities implemented in dynamixel_ros in your projects. Be sure to consult the examples located in the src folder, as they include the correct order of function calls for initializing control tables, creating object instances, and more.
 
 ## Features
 
-The `dynamixel_ros_library` offers a robust and versatile set of features tailored for efficient and flexible control of Dynamixel motors within the ROS ecosystem. Below are the key features:
+The `dynamixel_ros` offers a robust and versatile set of features tailored for efficient and flexible control of Dynamixel motors within the ROS ecosystem. Below are the key features:
 
 ### Comprehensive Model Support
 
@@ -104,7 +104,7 @@ The library minimizes the possibility of errors, particularly in setter methods 
 
 ### ROS Integration
 
-The `dynamixel_ros_library` is designed specifically for use with ROS (Robot Operating System). This integration allows for seamless communication and control within ROS-based robotic applications, enhancing the overall efficiency and effectiveness of motor control.
+The `dynamixel_ros` is designed specifically for use with ROS (Robot Operating System). This integration allows for seamless communication and control within ROS-based robotic applications, enhancing the overall efficiency and effectiveness of motor control.
 
 ### Comprehensive Documentation and Examples
 
